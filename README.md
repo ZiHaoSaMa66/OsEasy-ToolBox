@@ -19,7 +19,7 @@
 - 打开噢易自带工具
 
 想要定制自己的的一言?   
-[点我查看外部一言格式说明!](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/main/外部一言格式说明.md)
+[点我查看外部一言格式说明!](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/blob/main/外部一言格式说明.md)
 
 -----
 
