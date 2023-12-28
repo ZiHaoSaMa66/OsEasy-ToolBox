@@ -3,6 +3,10 @@
 基于Python+Flet框架的   
 简陋的噢易多媒体网络教室工具箱  
 
+[![GitHub release](https://img.shields.io/github/release/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=green)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?include_prereleases&color=orange)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
+[![Stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=yellow)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/stargazers)
+
 > 网上几乎搜不到针对噢易的有效制裁工具     
 > (至少在我着手开发的时候是没找到一点..)     
 > (搜到的都是什么~~人机~~噢易的官网)    
