@@ -3,7 +3,7 @@
 基于Python+Flet框架的   
 简陋的噢易多媒体网络教室工具箱  
 
-[![GitHub release](https://img.shields.io/github/release/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=green)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
+[![GitHub release](https://img.shields.io/github/release/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=green)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases/latest)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?include_prereleases&color=orange)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
 [![Stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=yellow)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/stargazers)
 
