@@ -3,9 +3,9 @@
 基于Python+Flet框架的   
 简陋的噢易多媒体网络教室工具箱  
 
-[![GitHub release](https://img.shields.io/github/release/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=green)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases/latest)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?include_prereleases&color=orange)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
-[![Stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=yellow)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/stargazers)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?label=%E6%9C%80%E6%96%B0%E7%89%88&style=for-the-badge&include_prereleases&color=green)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
+![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E6%95%B0&color=orange)
+![GitHub Repo stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox?style=for-the-badge&color=blue)
 
 > 网上几乎搜不到针对噢易的有效制裁工具     
 > (至少在我着手开发的时候是没找到一点..)     
@@ -29,7 +29,7 @@
   - 仅恢复控屏锁定程序
   - 解除网络限制锁
   - Alt+X快捷键屏幕截图
-- 控屏(屏幕广播)管理
+- 屏幕广播管理
   - 替换拦截广播命令程序
   - 运行拦截窗口化广播命令
   - 恢复原有广播程序
