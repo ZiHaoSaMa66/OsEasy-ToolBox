@@ -4,7 +4,7 @@
 简陋的噢易多媒体网络教室工具箱  
 
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?label=%E6%9C%80%E6%96%B0%E7%89%88&style=for-the-badge&include_prereleases&color=green)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
-![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E6%95%B0&color=orange)
+![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E9%87%8F&color=orange)
 ![GitHub Repo stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox?style=for-the-badge&color=blue)
 
 > 网上几乎搜不到针对噢易的有效制裁工具     
