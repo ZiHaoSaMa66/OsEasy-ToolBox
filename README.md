@@ -3,17 +3,23 @@
 基于Python+Flet框架的   
 简陋的噢易多媒体网络教室工具箱  
 
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?label=%E6%9C%80%E6%96%B0%E7%89%88&style=for-the-badge&include_prereleases&color=green)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?label=%E6%9C%80%E6%96%B0%E7%89%88&style=for-the-badge&include_prereleases&color=pink)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
+[![GitHub release](https://img.shields.io/github/release/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=green&style=for-the-badge&label=%E7%A8%B3%E5%AE%9A%E7%89%88)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases/latest)
 ![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E9%87%8F&color=orange)
 ![GitHub Repo stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox?style=for-the-badge&color=blue)
 
-> 网上几乎搜不到针对噢易的有效制裁工具     
-> (至少在我着手开发的时候是没找到一点..)     
-> (搜到的都是什么~~人机~~噢易的官网)    
-> 搜来搜去实在找不到只能自己动手丰衣足食了    
+> 推荐优先使用稳定版    
+> 最新版拥有新特性    
+> 但是可能存在潜在未发现的Bug    
+
+网上几乎搜不到针对噢易的有效制裁工具     
+(至少在我着手开发的时候是没找到一点..)     
+(搜到的都是什么~~人机~~噢易的官网)    
+搜来搜去实在找不到只能自己动手丰衣足食了   
+**工具箱需要以管理员权限运行!**   
 > 但是只能说勉强能用 哥们编程也就那样了💦💦    
 > 至少我自己的电脑课上是能用的😎    
-> **工具箱需要以管理员权限运行!**     
+ 
 
 #### ✨工具箱目前支持功能✨
 - 进程管理
