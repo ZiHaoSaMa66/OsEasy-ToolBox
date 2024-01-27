@@ -24,6 +24,10 @@
  
 
 #### ✨工具箱目前支持功能✨
+
+<details>
+<summary>点击展开查看</summary>
+
 - 进程管理
   - 停止&启动学生端根服务
   - 一键重启学生端
@@ -49,6 +53,8 @@
   - 自定义显示字体
   - 更换自定义背景图片
   - 背景图片调整透明度
+
+</details>
 
 > 可能某些功能上手用的时候会有点抽象     
 > 哥们脑子就那样了 理解一下 理解万岁! （咳咳     
@@ -89,7 +95,7 @@
 
 ![屏幕截图 2023-12-22 223003](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/assets/134737096/0168a6fb-16aa-428b-bf9b-6063d1623db3)
 
-![屏幕截图 2023-12-22 223014](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/assets/134737096/08450c03-d93d-434c-881e-2d91d8aa2b13)
+![sc5](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/assets/134737096/3b011ff9-1808-4a26-81e2-89d72bccf383)
 
 ![屏幕截图 2023-12-22 223021](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/assets/134737096/660f4f86-b8a4-4173-87e6-9fcf5cedd052)
 
