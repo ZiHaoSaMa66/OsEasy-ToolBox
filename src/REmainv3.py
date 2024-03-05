@@ -26,7 +26,7 @@ class Ui():
 
     def __init__(self) -> None:
         
-        self.ver = "OsEasy-ToolBox v1.7 Beta"
+        self.ver = "OsEasy-ToolBox v1.7 Beta2"
 
         self.dev_mode = False
         # 开发者模式 解锁实验性功能
@@ -738,6 +738,10 @@ class Ui():
             self.page.window_visible = False
             self.page.update()
             status = guaqi_process("Student.exe")
+            status_ = guaqi_process("MultiClient.exe")
+            # 这样就应该能搞定了 - issue 14
+            # 如果乱玩的话 我也不知道会出什么问题 (
+
             if status ==True:
                 self.guaqi_runstatus = True
                 # 我真是服了大哥 忘记给补self上也是人才了
@@ -751,6 +755,7 @@ class Ui():
                 self.show_snakemessage(status)
         else:
             status = huifu_process("Student.exe")
+            status_ = huifu_process("MultiClient.exe")
             if status ==True:
                 self.guaqi_runstatus = False
             else:
