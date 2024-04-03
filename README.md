@@ -1,12 +1,11 @@
-# OsEasy-ToolBox
+![BakaToolBox](https://socialify.git.ci/ZiHaoSaMa66/OsEasy-ToolBox/image?description=1&descriptionEditable=%E7%AE%80%E9%99%8B%E7%9A%84%E5%99%A2%E6%98%93%E5%A4%9A%E5%AA%92%E4%BD%93%E7%BD%91%E7%BB%9C%E6%95%99%E5%AE%A4%E5%B7%A5%E5%85%B7%E7%AE%B1&font=Jost&issues=1&language=1&logo=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F134737096&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Auto)
 
-基于Python+Flet框架的   
-简陋的噢易多媒体网络教室工具箱  
+---
 
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?label=%E6%9C%80%E6%96%B0%E7%89%88&style=for-the-badge&include_prereleases&color=pink)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
 [![GitHub release](https://img.shields.io/github/release/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=green&style=for-the-badge&label=%E7%A8%B3%E5%AE%9A%E7%89%88)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases/latest)
 ![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E9%87%8F&color=orange)
-![GitHub Repo stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox?style=for-the-badge&color=blue)
+
 
 > 推荐优先使用稳定版    
 > 最新版拥有新特性    
@@ -19,11 +18,14 @@
 搜来搜去实在找不到只能自己动手丰衣足食了   
 如果你学校的电脑是**win7系统**的请使用[轻量版工具箱!](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox-Lite)     
 **工具箱需要以管理员权限运行!**   
+适用于``V10.8.2.4411``桌面云环境的噢易学生端      
 > 但是只能说勉强能用 哥们编程也就那样了💦💦    
 > 至少我自己的电脑课上是能用的😎       
  
 
 #### ✨工具箱目前支持功能✨
+
+***不保证功能在所有版本的噢易学生端中均可用***
 
 <details>
 <summary>点击展开查看</summary>
@@ -81,7 +83,8 @@
 要是懒得输入密码  
 或者是想要将工具箱分享给你的好同学们   
 也可以下载无密码版本的  
-> ~~只是可能会少一点坑人的乐趣~~ 🤫(咳咳)
+> ~~只是可能会少一点坑人的乐趣~~ 🤫(咳咳)    
+> ~~刚开始写的时候心胸比较狭隘(~~    
 
 </details>
 
@@ -112,4 +115,5 @@
 > 如果可以的话... 点一个吧plz qwq     
 
 有问题&发现Bug&提供建议可以提提issue     
+同时如果你有兴趣也可以开开PR    
 愿我们的电脑课都不再无聊~🥳   
