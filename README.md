@@ -5,7 +5,7 @@
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/ZiHaoSaMa66/OsEasy-ToolBox?label=%E6%9C%80%E6%96%B0%E7%89%88&style=for-the-badge&include_prereleases&color=pink)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases)
 [![GitHub release](https://img.shields.io/github/release/ZiHaoSaMa66/OsEasy-ToolBox.svg?color=green&style=for-the-badge&label=%E7%A8%B3%E5%AE%9A%E7%89%88)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox/releases/latest)
 ![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E9%87%8F&color=orange)
-
+![GitHub Repo stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox?style=for-the-badge&color=yellow)
 
 > 推荐优先使用稳定版    
 > 最新版拥有新特性    
@@ -25,7 +25,7 @@
 
 #### ✨工具箱目前支持功能✨
 
-***不保证功能在所有版本的噢易学生端中均可用***
+***不保证功能在其他版本的噢易学生端中均可用***
 
 <details>
 <summary>点击展开查看</summary>
