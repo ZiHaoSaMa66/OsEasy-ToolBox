@@ -37,6 +37,7 @@ class Ui():
         # self.bgpath = None # 初始化背景路径变量
         # AttributeError: 'Ui' object has no attribute 'bgpath'
         
+        self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
         # 构造监听器对象listener
         self.JieTu_listener = keyboard.Listener(on_press=self.JT_on_press)
@@ -45,6 +46,10 @@ class Ui():
 
         self.KillSCR_listener = keyboard.Listener(on_press=self.SCR_on_press)
         
+        self.runwindows_press_alt = False
+        self.runwindows_press_u = False
+
+
         self.SCR_Press_K = False
         self.SCR_Press_Alt = False
 
@@ -83,7 +88,7 @@ class Ui():
         if self.FullSC_Press_Alt and self.FullSC_Press_F and self.FullSC_Press_Ctrl:
             self.FullSC_Press_Ctrl = self.FullSC_Press_Alt = self.FullSC_Press_F = False
             #重置按键状态
-            if self.RunFullSC_swc.value ==False:
+            if self.KillSCR_swc.value ==False:
                 self.show_snakemessage("警告！ 未开启快捷键杀广播进程\n尝试运行的操作已拦截....")
             else:
                 status = get_yuancheng_cmd()
@@ -101,7 +106,7 @@ class Ui():
         '''按钮点击直接运行全屏广播指令'''
         status = get_yuancheng_cmd()
 
-        if self.RunFullSC_swc.value ==True:
+        if self.KillSCR_swc.value ==True:
 
 
             if status ==None:
@@ -156,7 +161,28 @@ class Ui():
         # if key == keyboard.KeyCode(char="x") and key == keyboard.Key.alt_l:
         #     get_scshot()
 
+    def run_windowskjj_onpress(self,key):
+        '''快捷键触发运行窗口广播'''
+        if key == keyboard.KeyCode(char="U") or key == keyboard.KeyCode(char="u"):
+            self.runwindows_press_u = True
+        if key == keyboard.Key.alt or key == keyboard.Key.alt_l or key == keyboard.Key.alt_r:
+            self.runwindows_press_alt = True
+        
 
+        if self.runwindows_press_alt and self.runwindows_press_u:
+            self.runwindows_press_u = self.runwindows_press_alt = False
+            
+            status = get_yuancheng_cmd()
+            if status ==None:
+                self.show_snakemessage("未拦截到控制命令参数")
+            else:
+                builded = build_run_srcmd(status)
+
+                runcmd(builded)
+
+
+
+        pass
 
     def theme_changed(self,e):
 
@@ -349,6 +375,9 @@ class Ui():
 
         self.KillSCR_swc = ft.Switch(label="Alt+K 杀屏幕广播进程",on_change=self.HotKey_KillSCR,active_color="pink")
 
+        self.runwindows_swc = ft.Switch(label="Alt+U 运行窗口屏幕广播",on_change=self.hotkey_runwindows,active_color="pink")
+
+
         self.try_read_sharecmd = ft.FilledTonalButton(text="运行窗口化广播命令",on_click=self.Get_yccmd_loj,icon=ft.icons.WINDOW_SHARP)
 
 
@@ -460,6 +489,16 @@ class Ui():
         pass
 
         
+    def hotkey_runwindows(self,e):
+        if self.runwindows_swc.value ==True:
+            
+            self.runwindows_lis.run()
+            
+        elif self.runwindows_swc.value ==False:
+            self.runwindows_lis.stop()
+        pass
+
+
     def selPages_Helper(self,index):
         '''帮助切换页面选择器'''
         self.NowSelIndex = str(index)
@@ -571,9 +610,9 @@ class Ui():
 
         if self.dev_mode==False:
 
-            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.KillSCR_swc,self.RunFullSC_swc])
+            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
         else:
-            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn,self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.KillSCR_swc,self.RunFullSC_swc])
+            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn,self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
 
         
         if self.loaded_bg ==True:
