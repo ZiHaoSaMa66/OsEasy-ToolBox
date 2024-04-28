@@ -380,6 +380,8 @@ def summon_unlock_usb():
     fm.write(cmdtext)
     fm.close()
 
+
+
 def summon_killerV2():
     '''生成V2击杀脚本'''
     global cmdpath
@@ -394,7 +396,7 @@ def summon_killer():
     global cmdpath
     mp = cmdpath + "\\k.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxKiller\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im MultiClient.exe\n:a\ntaskkill /f /t /im Student.exe\ngoto a"
+    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxKiller\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im BlackSlient.exe:a\ntaskkill /f /t /im Student.exe\ngoto a"
     fm.write(cmdtext)
     fm.close()
 
@@ -402,7 +404,7 @@ def backupOeKeyDll():
     '''备份OE的关键文件'''
     global bkppath,oseasypath
     print("尝试备份关键文件")
-    namelist = ["oenetlimitx64.cat","OeNetLimitSetup.exe","OeNetLimit.sys","OeNetLimit.inf","MultiClient.exe","MultiClient.exe","LoadDriver.exe"]
+    namelist = ["oenetlimitx64.cat","OeNetLimitSetup.exe","OeNetLimit.sys","OeNetLimit.inf","MultiClient.exe","MultiClient.exe","LoadDriver.exe","BlackSlient.exe"]
     for filename in namelist:
         oepath = oseasypath + filename
         needbkpath =  bkppath + "\\" + filename
@@ -413,8 +415,15 @@ def backupOeKeyDll():
         # runcmd(f'copy "{oepath}" "{needbkpath}"\npause')
         runcmd(f'copy "{oepath}" "{needbkpath}"')
 
+def restoneBlackSlt(e):
+    '''恢复黑屏安静程序'''
+    global bkppath,oseasypath
+    filename = "BlackSlient.exe"
+    oepath = oseasypath + filename
+    needbkpath =  bkppath + "\\" + filename
+    runcmd(f'copy "{needbkpath}" "{oepath}"')
 
-def restoneMutClient(e):
+def restoneMutClient():
     '''恢复用于控屏的MultiClient'''
     global bkppath,oseasypath
     filename = "MultiClient.exe"
@@ -426,7 +435,7 @@ def restoneKeyDll():
     '''恢复OE关键文件'''
     global bkppath,oseasypath
     print("尝试还原关键文件")
-    namelist = ["oenetlimitx64.cat","OeNetLimitSetup.exe","OeNetLimit.sys","OeNetLimit.inf","MultiClient.exe","LoadDriver.exe"]
+    namelist = ["oenetlimitx64.cat","OeNetLimitSetup.exe","OeNetLimit.sys","OeNetLimit.inf","MultiClient.exe","LoadDriver.exe","BlackSlient.exe"]
     for filename in namelist:
         oepath = oseasypath + filename
         needbkpath =  bkppath + "\\" + filename
@@ -447,7 +456,7 @@ def summon_deldll(delMtc:bool,shutdown:bool):
     
     mp = cmdpath + "\\d.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBox-Helper\ncd /D C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\\\ntimeout 1\ndel /F /S OeNetLimitSetup.exe\ndel /F /S OeNetLimit.sys\ndel /F /S OeNetLimit.inf\ndel /F /S LockKeyboard.dll\ndel /F /S LoadDriver.exe\ndel /F /S LoadDriver.exe\ndel /F /S oenetlimitx64.cat"
+    cmdtext = "@ECHO OFF\ntitle OsEasyToolBox-Helper\ncd /D C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\\\ntimeout 1\ndel /F /S OeNetLimitSetup.exe\ndel /F /S OeNetLimit.sys\ndel /F /S OeNetLimit.inf\ndel /F /S LockKeyboard.dll\ndel /F /S LoadDriver.exe\ndel /F /S LoadDriver.exe\ndel /F /S oenetlimitx64.cat\ndel /F /S BlackSlient.exe"
     if delMtc ==True:
         cmdtext += "\ndel /F /S MultiClient.exe"
     if shutdown ==False:
