@@ -26,7 +26,7 @@ class Ui():
 
     def __init__(self) -> None:
         
-        self.ver = "OsEasy-ToolBox v1.7 Beta"
+        self.ver = "OsEasy-ToolBox v1.7 Beta2"
 
         self.dev_mode = False
         # 开发者模式 解锁实验性功能
@@ -37,6 +37,7 @@ class Ui():
         # self.bgpath = None # 初始化背景路径变量
         # AttributeError: 'Ui' object has no attribute 'bgpath'
         
+        self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
         # 构造监听器对象listener
         self.JieTu_listener = keyboard.Listener(on_press=self.JT_on_press)
@@ -45,6 +46,10 @@ class Ui():
 
         self.KillSCR_listener = keyboard.Listener(on_press=self.SCR_on_press)
         
+        self.runwindows_press_alt = False
+        self.runwindows_press_u = False
+
+
         self.SCR_Press_K = False
         self.SCR_Press_Alt = False
 
@@ -83,7 +88,7 @@ class Ui():
         if self.FullSC_Press_Alt and self.FullSC_Press_F and self.FullSC_Press_Ctrl:
             self.FullSC_Press_Ctrl = self.FullSC_Press_Alt = self.FullSC_Press_F = False
             #重置按键状态
-            if self.RunFullSC_swc.value ==False:
+            if self.KillSCR_swc.value ==False:
                 self.show_snakemessage("警告！ 未开启快捷键杀广播进程\n尝试运行的操作已拦截....")
             else:
                 status = get_yuancheng_cmd()
@@ -101,7 +106,7 @@ class Ui():
         '''按钮点击直接运行全屏广播指令'''
         status = get_yuancheng_cmd()
 
-        if self.RunFullSC_swc.value ==True:
+        if self.KillSCR_swc.value ==True:
 
 
             if status ==None:
@@ -156,7 +161,28 @@ class Ui():
         # if key == keyboard.KeyCode(char="x") and key == keyboard.Key.alt_l:
         #     get_scshot()
 
+    def run_windowskjj_onpress(self,key):
+        '''快捷键触发运行窗口广播'''
+        if key == keyboard.KeyCode(char="U") or key == keyboard.KeyCode(char="u"):
+            self.runwindows_press_u = True
+        if key == keyboard.Key.alt or key == keyboard.Key.alt_l or key == keyboard.Key.alt_r:
+            self.runwindows_press_alt = True
+        
 
+        if self.runwindows_press_alt and self.runwindows_press_u:
+            self.runwindows_press_u = self.runwindows_press_alt = False
+            
+            status = get_yuancheng_cmd()
+            if status ==None:
+                self.show_snakemessage("未拦截到控制命令参数")
+            else:
+                builded = build_run_srcmd(status)
+
+                runcmd(builded)
+
+
+
+        pass
 
     def theme_changed(self,e):
 
@@ -260,9 +286,9 @@ class Ui():
         self.unlock_func_askdlg = ft.AlertDialog(
         modal=True,
         title=ft.Text("解锁选项"),
-        content=ft.Text("选择适合你的选项\n两者一起: 解除键盘锁+删除控屏锁定程序 (需要注销)\n仅控屏: 仅删除控屏锁定程序"),
+        content=ft.Text("选择适合你的选项\n三者一起: 删除黑屏安静+解除键盘锁+删除控屏锁定程序 (需要注销)\n仅控屏: 仅删除控屏锁定程序"),
         actions=[
-            ft.TextButton("两者一起", on_click=lambda _:self.close_askdel_dlg(xueze=True)),
+            ft.TextButton("三者一起", on_click=lambda _:self.close_askdel_dlg(xueze=True)),
             ft.TextButton("仅控屏锁定程序", on_click=lambda _:self.close_askdel_dlg(xueze=False)),
             ft.TextButton("取消", on_click=lambda _:self.close_askdel_dlg(xueze=None)),
         ],
@@ -324,9 +350,9 @@ class Ui():
         # self.yiyanshowtext2,ft.Divider(),
         # self.yiyanshowtext2 = self.yiyanshowtext
         
-        self.funcTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.mmpc_Stext,self.mmpc_sw,ft.FilledTonalButton(text="长按重启学生端",icon=ft.icons.RESTORE,on_long_press=selfunc_g4),ft.FilledTonalButton(text="注册粘滞键替换",icon=ft.icons.COPY_SHARP,on_click=selfunc_g1),ft.Switch(label="外部cmd守护进程",active_color="green",on_change=selfunc_g6),self.guaqi_sw,ft.FilledTonalButton(text="打开噢易自带工具",icon=ft.icons.OPEN_IN_NEW,on_click=selfunc_g8)])
-        
-        self.func_SecondTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),ft.FilledTonalButton(text="长按以删除脚本文件",icon=ft.icons.CLEANING_SERVICES_OUTLINED,on_long_press=selfunc_g0),ft.FilledTonalButton(text="删除键盘锁驱动&控屏锁定程序",icon=ft.icons.KEYBOARD_SHARP,on_click=self.open_askdel_dlg),ft.FilledTonalButton(text="长按恢复所有备份文件",icon=ft.icons.RESTORE,on_long_press=selfunc_g5),ft.FilledTonalButton(text="长按以仅恢复控屏锁定程序",icon=ft.icons.SCREEN_SHARE_SHARP,on_long_press=restoneMutClient),ft.FilledTonalButton(text="解除软件网络限制",icon=ft.icons.WIFI_PASSWORD_SHARP,on_click=self.forunlocknettips),ft.FilledTonalButton(text="[BETA] 解除USB管控",icon=ft.icons.USB_SHARP,on_click=self.usb_unlock_tips),self.FastGetSC])
+        self.funcTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.mmpc_Stext,self.mmpc_sw,ft.FilledTonalButton(text="长按重启学生端",icon=ft.icons.RESTORE,on_long_press=selfunc_g4),ft.FilledTonalButton(text="重新获取学生端路径",icon=ft.icons.REFRESH,on_click=self.reflashStudentPath),ft.FilledTonalButton(text="注册粘滞键替换",icon=ft.icons.COPY_SHARP,on_click=selfunc_g1),ft.Switch(label="外部cmd守护进程",active_color="green",on_change=selfunc_g6),self.guaqi_sw,ft.FilledTonalButton(text="打开噢易自带工具",icon=ft.icons.OPEN_IN_NEW,on_click=selfunc_g8)])
+
+        self.func_SecondTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),ft.FilledTonalButton(text="长按以删除脚本文件",icon=ft.icons.CLEANING_SERVICES_OUTLINED,on_long_press=selfunc_g0),ft.FilledTonalButton(text="删除键盘锁驱动&控屏锁定程序",icon=ft.icons.KEYBOARD_SHARP,on_click=self.open_askdel_dlg),ft.FilledTonalButton(text="长按恢复所有备份文件",icon=ft.icons.RESTORE,on_long_press=selfunc_g5),ft.FilledTonalButton(text="长按以恢复黑屏安静程序",icon=ft.icons.ACCOUNT_BOX,on_long_press=restoneBlackSlt),ft.FilledTonalButton(text="长按以仅恢复控屏锁定程序",icon=ft.icons.SCREEN_SHARE_SHARP,on_long_press=restoneMutClient),ft.FilledTonalButton(text="解除软件网络限制",icon=ft.icons.WIFI_PASSWORD_SHARP,on_click=self.forunlocknettips),ft.FilledTonalButton(text="[BETA] 解除USB管控",icon=ft.icons.USB_SHARP,on_click=self.usb_unlock_tips),self.FastGetSC])
 
 
         self.conl_dev_saveinput = ft.TextField(label="键入远程命令")
@@ -348,6 +374,9 @@ class Ui():
         self.KillSCR_btn = ft.FilledTonalButton("手动杀屏幕广播进程",icon=ft.icons.BACK_HAND_OUTLINED,on_click=self.dic_KillSCR)
 
         self.KillSCR_swc = ft.Switch(label="Alt+K 杀屏幕广播进程",on_change=self.HotKey_KillSCR,active_color="pink")
+
+        self.runwindows_swc = ft.Switch(label="Alt+U 运行窗口屏幕广播",on_change=self.hotkey_runwindows,active_color="pink")
+
 
         self.try_read_sharecmd = ft.FilledTonalButton(text="运行窗口化广播命令",on_click=self.Get_yccmd_loj,icon=ft.icons.WINDOW_SHARP)
 
@@ -414,6 +443,24 @@ class Ui():
         
         self.try_get_history_path()
 
+        self.reflashStudentPath("eee")
+
+    def reflashStudentPath(self,e):
+        global oseasypath
+        '''重新获取学生端路径\n
+        设计上的一点问题.. 干活的函数没办法直接弹窗\n
+        只能用个写在UI类里多余的函数来做'''
+        
+        status = TryGetStudentPath()
+        
+        oseasypath = status
+        
+        if status !=False:
+            self.show_snakemessage(f"更新学生端路径成功\n{   oseasypath}")
+        else:
+            self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
+        pass
+
     def open_devmode(self,e):
         '''隐藏功能 手动打开开发者模式'''
         self.dev_mode = True
@@ -460,6 +507,16 @@ class Ui():
         pass
 
         
+    def hotkey_runwindows(self,e):
+        if self.runwindows_swc.value ==True:
+            
+            self.runwindows_lis.run()
+            
+        elif self.runwindows_swc.value ==False:
+            self.runwindows_lis.stop()
+        pass
+
+
     def selPages_Helper(self,index):
         '''帮助切换页面选择器'''
         self.NowSelIndex = str(index)
@@ -571,9 +628,9 @@ class Ui():
 
         if self.dev_mode==False:
 
-            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.KillSCR_swc,self.RunFullSC_swc])
+            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
         else:
-            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn,self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.KillSCR_swc,self.RunFullSC_swc])
+            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn,self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
 
         
         if self.loaded_bg ==True:
@@ -738,6 +795,10 @@ class Ui():
             self.page.window_visible = False
             self.page.update()
             status = guaqi_process("Student.exe")
+            status_ = guaqi_process("MultiClient.exe")
+            # 这样就应该能搞定了 - issue 14
+            # 如果乱玩的话 我也不知道会出什么问题 (
+
             if status ==True:
                 self.guaqi_runstatus = True
                 # 我真是服了大哥 忘记给补self上也是人才了
@@ -751,6 +812,7 @@ class Ui():
                 self.show_snakemessage(status)
         else:
             status = huifu_process("Student.exe")
+            status_ = huifu_process("MultiClient.exe")
             if status ==True:
                 self.guaqi_runstatus = False
             else:
