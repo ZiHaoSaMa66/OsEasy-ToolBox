@@ -23,6 +23,8 @@ loginpj = "C:\\Users\\Administrator\\temp\\rod\\passv2.txt"
 
 oseasypath = "C:\\Program Files (x86)\\Os-Easy\\os-easy multicast teaching system\\"
 
+oseasypath_have_been_modified = False
+
 path_zidingyi_fort = "C:\\Users\\Administrator\\temp\\rod\\path_fort.txt"
 path_zidingyi_bg = "C:\\Users\\Administrator\\temp\\rod\\path_bg.txt"
 path_zidingyi_yiyan = "C:\\Users\\Administrator\\temp\\rod\\path_yiyan.txt"
@@ -44,6 +46,39 @@ os.makedirs(bkppath,mode=0o777,exist_ok=True)
 os.makedirs(_loginpj,mode=0o777,exist_ok=True)
 
 
+def TryGetStudentPath():
+    '''尝试获取学生端路径 并更新全局变量'''
+    global oseasypath
+    Spath = get_program_path("Student.exe")
+    if Spath == None:
+        print("[DEBUG] > 未找到运行中的学生端")
+        return False
+    Spath = str(Spath).replace("/","\\").replace("Student.exe","")
+    oseasypath = Spath
+    print(f"[DEBUG] > 学生端路径为：{oseasypath}")
+    return oseasypath
+    
+    
+def get_program_path(program_name):
+    """
+    获取指定程序的运行路径
+    :param program_name: 程序名称，如 'exp.exe'
+    :return: 程序的运行路径
+    """
+    for proc in psutil.process_iter(['pid', 'name', 'exe']):
+        try:
+            if proc.info['name'] == program_name:
+                return proc.info['exe']
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
+    return None
+
+    
+def getIfStudentPathHasModified():
+    '''获取学生端路径是否被修改\n'''
+    global oseasypath_have_been_modified
+    return oseasypath_have_been_modified
+    
 
 def usb_unlock():
     '''尝试解锁USB管控'''
@@ -54,7 +89,7 @@ def usb_unlock():
     runcmd("sc delete easyusbflt")
     time.sleep(1)
     
-    
+
     
 
 def replace_ScreenRender():
@@ -80,7 +115,7 @@ def replace_ScreenRender():
             return False
 
         # print("执行重命名")
-        runcmd('rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe" "ScreenRender_Y.exe"')
+        runcmd(f'rename "{oseasypath}ScreenRender.exe" "ScreenRender_Y.exe"')
         time.sleep(2.5)
         # 将原有应用重命名
         # print("执行复制命令")
@@ -91,7 +126,7 @@ def replace_ScreenRender():
         time.sleep(2.5)
         # 复制拦截程序
         # print("拦截程序重命名")
-        runcmd('rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Helper.exe" "ScreenRender.exe"')
+        runcmd(f'rename "{oseasypath}ScreenRender_Helper.exe" "ScreenRender.exe"')
         #将拦截程序重命名
         return True
 
@@ -100,9 +135,9 @@ def replace_ScreenRender():
 
 def restone_ScreenRender():
     '''还原原有的ScreenRender'''
-    
+    global oseasypath
     onetime_protectcheck()
-    path = "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe"
+    path = f"{oseasypath}ScreenRender.exe"
     check_path = "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe"
     
     a = check_tihuan_SCRY_status()
@@ -113,7 +148,7 @@ def restone_ScreenRender():
         os.remove(path)
     except FileNotFoundError:
         pass
-    runcmd('rename "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe" "ScreenRender.exe"')
+    runcmd(f'rename "{oseasypath}ScreenRender_Y.exe" "ScreenRender.exe"')
 
     return True
 
@@ -143,12 +178,14 @@ def handin_save_yc_cmd(save_cmd):
 
 def build_run_srcmd(YC_command):
     '''构造执行显示命令'''
+    global oseasypath
+    
     status = check_tihuan_SCRY_status()
     if status==True:
-        fdb = f'"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe" {YC_command}'
+        fdb = f'"{oseasypath}ScreenRender_Y.exe" {YC_command}'
         return fdb
     else:
-        fdb = f'"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe" {YC_command}'
+        fdb = f'"{oseasypath}ScreenRender.exe" {YC_command}'
         return fdb
 
 def save_now_yccmd():
@@ -172,7 +209,8 @@ def check_tihuan_SCRY_status():
     '''通过检查SCR_Y是否存在
     \n来检查是否已经完成替换拦截程序
     \n返回True/False'''
-    check_path = "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender_Y.exe"
+    global oseasypath
+    check_path = f"{oseasypath}ScreenRender_Y.exe"
     try:
         fm = open(check_path,'r')
         fm.close()
@@ -396,7 +434,7 @@ def summon_killer():
     global cmdpath
     mp = cmdpath + "\\k.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxKiller\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im BlackSlient.exe:a\ntaskkill /f /t /im Student.exe\ngoto a"
+    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxKiller\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im BlackSlient.exe\n:a\ntaskkill /f /t /im Student.exe\ngoto a"
     fm.write(cmdtext)
     fm.close()
 
@@ -451,12 +489,12 @@ def runbat(batname:str):
 
 def summon_deldll(delMtc:bool,shutdown:bool):
     '''生成删除dll脚本'''
-    global cmdpath
+    global cmdpath,oseasypath
     backupOeKeyDll()
     
     mp = cmdpath + "\\d.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBox-Helper\ncd /D C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\\\ntimeout 1\ndel /F /S OeNetLimitSetup.exe\ndel /F /S OeNetLimit.sys\ndel /F /S OeNetLimit.inf\ndel /F /S LockKeyboard.dll\ndel /F /S LoadDriver.exe\ndel /F /S LoadDriver.exe\ndel /F /S oenetlimitx64.cat\ndel /F /S BlackSlient.exe"
+    cmdtext = f"@ECHO OFF\ntitle OsEasyToolBox-Helper\ncd /D {oseasypath}\ntimeout 1\ndel /F /S OeNetLimitSetup.exe\ndel /F /S OeNetLimit.sys\ndel /F /S OeNetLimit.inf\ndel /F /S LockKeyboard.dll\ndel /F /S LoadDriver.exe\ndel /F /S LoadDriver.exe\ndel /F /S oenetlimitx64.cat\ndel /F /S BlackSlient.exe"
     if delMtc ==True:
         cmdtext += "\ndel /F /S MultiClient.exe"
     if shutdown ==False:
@@ -578,7 +616,8 @@ def selfunc_g3(need_shutdown:bool):
     runbat("d.bat")
     
 def selfunc_g4(e):
-    usecmd_runcmd('"C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\Student.exe"')
+    global oseasypath
+    usecmd_runcmd(f'"{oseasypath}Student.exe"')
 
 def selfunc_g5(e):
     restoneKeyDll()

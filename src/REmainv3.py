@@ -286,7 +286,7 @@ class Ui():
         self.unlock_func_askdlg = ft.AlertDialog(
         modal=True,
         title=ft.Text("解锁选项"),
-        content=ft.Text("选择适合你的选项\n两者一起: 删除黑屏安静+解除键盘锁+删除控屏锁定程序 (需要注销)\n仅控屏: 仅删除控屏锁定程序"),
+        content=ft.Text("选择适合你的选项\n三者一起: 删除黑屏安静+解除键盘锁+删除控屏锁定程序 (需要注销)\n仅控屏: 仅删除控屏锁定程序"),
         actions=[
             ft.TextButton("三者一起", on_click=lambda _:self.close_askdel_dlg(xueze=True)),
             ft.TextButton("仅控屏锁定程序", on_click=lambda _:self.close_askdel_dlg(xueze=False)),
@@ -350,7 +350,7 @@ class Ui():
         # self.yiyanshowtext2,ft.Divider(),
         # self.yiyanshowtext2 = self.yiyanshowtext
         
-        self.funcTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.mmpc_Stext,self.mmpc_sw,ft.FilledTonalButton(text="长按重启学生端",icon=ft.icons.RESTORE,on_long_press=selfunc_g4),ft.FilledTonalButton(text="注册粘滞键替换",icon=ft.icons.COPY_SHARP,on_click=selfunc_g1),ft.Switch(label="外部cmd守护进程",active_color="green",on_change=selfunc_g6),self.guaqi_sw,ft.FilledTonalButton(text="打开噢易自带工具",icon=ft.icons.OPEN_IN_NEW,on_click=selfunc_g8)])
+        self.funcTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.mmpc_Stext,self.mmpc_sw,ft.FilledTonalButton(text="长按重启学生端",icon=ft.icons.RESTORE,on_long_press=selfunc_g4),ft.FilledTonalButton(text="重新获取学生端路径",icon=ft.icons.REFRESH,on_click=self.reflashStudentPath),ft.FilledTonalButton(text="注册粘滞键替换",icon=ft.icons.COPY_SHARP,on_click=selfunc_g1),ft.Switch(label="外部cmd守护进程",active_color="green",on_change=selfunc_g6),self.guaqi_sw,ft.FilledTonalButton(text="打开噢易自带工具",icon=ft.icons.OPEN_IN_NEW,on_click=selfunc_g8)])
 
         self.func_SecondTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),ft.FilledTonalButton(text="长按以删除脚本文件",icon=ft.icons.CLEANING_SERVICES_OUTLINED,on_long_press=selfunc_g0),ft.FilledTonalButton(text="删除键盘锁驱动&控屏锁定程序",icon=ft.icons.KEYBOARD_SHARP,on_click=self.open_askdel_dlg),ft.FilledTonalButton(text="长按恢复所有备份文件",icon=ft.icons.RESTORE,on_long_press=selfunc_g5),ft.FilledTonalButton(text="长按以恢复黑屏安静程序",icon=ft.icons.ACCOUNT_BOX,on_long_press=restoneBlackSlt),ft.FilledTonalButton(text="长按以仅恢复控屏锁定程序",icon=ft.icons.SCREEN_SHARE_SHARP,on_long_press=restoneMutClient),ft.FilledTonalButton(text="解除软件网络限制",icon=ft.icons.WIFI_PASSWORD_SHARP,on_click=self.forunlocknettips),ft.FilledTonalButton(text="[BETA] 解除USB管控",icon=ft.icons.USB_SHARP,on_click=self.usb_unlock_tips),self.FastGetSC])
 
@@ -443,6 +443,23 @@ class Ui():
         
         self.try_get_history_path()
 
+        self.reflashStudentPath("eee")
+
+    def reflashStudentPath(self,e):
+        global oseasypath
+        '''重新获取学生端路径\n
+        设计上的一点问题.. 干活的函数没办法直接弹窗\n
+        只能用个写在UI类里多余的函数来做'''
+        
+        status = TryGetStudentPath()
+        
+        oseasypath = status
+        
+        if status !=False:
+            self.show_snakemessage(f"更新学生端路径成功\n{   oseasypath}")
+        else:
+            self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
+        pass
 
     def open_devmode(self,e):
         '''隐藏功能 手动打开开发者模式'''
