@@ -26,7 +26,7 @@ class Ui():
 
     def __init__(self) -> None:
         
-        self.ver = "OsEasy-ToolBox v1.7 Beta2"
+        self.ver = "OsEasy-ToolBox v1.7 Beta2A"
 
         self.dev_mode = False
         # 开发者模式 解锁实验性功能
@@ -468,6 +468,8 @@ class Ui():
         self.show_snakemessage("开发者模式已启用")
         self.page.update()
 
+        
+
     def HotKey_screenshot(self,e):
         '''快捷键截图开关触发函数'''
         # print("DEBUG e obj > ",e)
@@ -630,6 +632,13 @@ class Ui():
 
             self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
         else:
+            
+            # self.page.window_min_height = 650
+            self.page.window_height = 715
+            # 修复 issue21 // 启用开发者模式时 快捷键全屏广播无法使用 //
+            # 其实也算不上Bug吧.. 自己把窗口拉长一点然后再切回来刷新就可以了()
+            
+            
             self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn,self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
 
         
