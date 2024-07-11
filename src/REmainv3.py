@@ -26,10 +26,10 @@ class Ui():
 
     def __init__(self) -> None:
         
-        self.ver = "OsEasy-ToolBox v1.7 Beta2A"
+        self.ver = "OsEasy-ToolBox v1.7 RC"
 
         self.dev_mode = False
-        # 开发者模式 解锁实验性功能
+        # 开发者模式 解锁高级功能
 
         if self.dev_mode == True:
             self.ver += " - DEV MODE"
@@ -270,7 +270,7 @@ class Ui():
         self.page.theme = ft.Theme(font_family="ht")
         self.page.update()
         
-        self.page.window_height = 600
+        self.page.window_height = 615
         self.page.window_width = 450
         
         self.page.window_max_height = 2000
@@ -341,7 +341,7 @@ class Ui():
         self.guaqi_sw = ft.Switch(label="挂起学生端",active_color="pink",on_change=self.guaqi_chufa)
         
         self.mmpc_sw = ft.FilledTonalButton(text="长按开&关学生端根服务",icon=ft.icons.BACK_HAND_OUTLINED,on_long_press=self.MMPC_shutdown_start_chufa,on_hover=self.only_update_MMPC_status)
-        self.mmpc_Stext = ft.TextField(label="根服务状态", value="未知",read_only=True,text_align=ft.TextAlign.CENTER)
+        self.mmpc_Stext = ft.TextField(label="根服务状态", value="未知 (点我更新状态)",read_only=True,on_focus=self.only_update_MMPC_status,text_align=ft.TextAlign.CENTER)
         # self.stud_pid = ft.TextField(label="学生端PID", disabled=True, value="未知")
         
         self.FastGetSC = ft.Switch(label="Alt+X 快捷键屏幕截图",on_change=self.HotKey_screenshot)
@@ -352,13 +352,13 @@ class Ui():
         
         self.funcTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.mmpc_Stext,self.mmpc_sw,ft.FilledTonalButton(text="长按重启学生端",icon=ft.icons.RESTORE,on_long_press=selfunc_g4),ft.FilledTonalButton(text="重新获取学生端路径",icon=ft.icons.REFRESH,on_click=self.reflashStudentPath),ft.FilledTonalButton(text="注册粘滞键替换",icon=ft.icons.COPY_SHARP,on_click=selfunc_g1),ft.Switch(label="外部cmd守护进程",active_color="green",on_change=selfunc_g6),self.guaqi_sw,ft.FilledTonalButton(text="打开噢易自带工具",icon=ft.icons.OPEN_IN_NEW,on_click=selfunc_g8)])
 
-        self.func_SecondTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),ft.FilledTonalButton(text="长按以删除脚本文件",icon=ft.icons.CLEANING_SERVICES_OUTLINED,on_long_press=selfunc_g0),ft.FilledTonalButton(text="删除键盘锁驱动&控屏锁定程序",icon=ft.icons.KEYBOARD_SHARP,on_click=self.open_askdel_dlg),ft.FilledTonalButton(text="长按恢复所有备份文件",icon=ft.icons.RESTORE,on_long_press=selfunc_g5),ft.FilledTonalButton(text="长按以恢复黑屏安静程序",icon=ft.icons.ACCOUNT_BOX,on_long_press=restoneBlackSlt),ft.FilledTonalButton(text="长按以仅恢复控屏锁定程序",icon=ft.icons.SCREEN_SHARE_SHARP,on_long_press=restoneMutClient),ft.FilledTonalButton(text="解除软件网络限制",icon=ft.icons.WIFI_PASSWORD_SHARP,on_click=self.forunlocknettips),ft.FilledTonalButton(text="[BETA] 解除USB管控",icon=ft.icons.USB_SHARP,on_click=self.usb_unlock_tips),self.FastGetSC])
+        self.func_SecondTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),ft.FilledTonalButton(text="长按以删除脚本文件",icon=ft.icons.CLEANING_SERVICES_OUTLINED,on_long_press=selfunc_g0),ft.FilledTonalButton(text="删除键盘锁驱动&控屏锁定程序",icon=ft.icons.KEYBOARD_SHARP,on_click=self.open_askdel_dlg),ft.FilledTonalButton(text="长按恢复所有备份文件",icon=ft.icons.RESTORE,on_long_press=selfunc_g5),ft.FilledTonalButton(text="长按以恢复黑屏安静程序",icon=ft.icons.ACCOUNT_BOX,on_long_press=restoneBlackSlt),ft.FilledTonalButton(text="长按以仅恢复控屏锁定程序",icon=ft.icons.SCREEN_SHARE_SHARP,on_long_press=restoneMutClient),ft.FilledTonalButton(text="解除软件网络限制",icon=ft.icons.WIFI_PASSWORD_SHARP,on_click=self.forunlocknettips),ft.FilledTonalButton(text="[BETA] 关闭USB管控服务",icon=ft.icons.USB_SHARP,on_click=self.usb_unlock_tips),self.FastGetSC])
 
 
-        self.conl_dev_saveinput = ft.TextField(label="键入远程命令")
-        self.conl_dev_update = ft.FilledTonalButton("手动更新远程命令",on_click=lambda _:handin_save_yc_cmd(self.conl_dev_saveinput.value),icon=ft.icons.UPDATE)
+        self.conl_dev_saveinput = ft.TextField(label="键入远程广播命令")
+        self.conl_dev_update = ft.FilledTonalButton("手动更新远程广播命令",on_click=lambda _:handin_save_yc_cmd(self.conl_dev_saveinput.value),icon=ft.icons.UPDATE)
 
-        self.conl_dev_getyccmd_btn = ft.FilledTonalButton(text="读取已拦截的命令",icon=ft.icons.BOOK,on_click=self.dev_read_lj_cmd_loj)
+        self.conl_dev_getyccmd_btn = ft.FilledTonalButton(text="读取已拦截的广播命令",icon=ft.icons.BOOK,on_click=self.dev_read_lj_cmd_loj)
         
         self.col_readme_dig = ft.FilledButton("点我查看此页面的使用说明",on_click=self.open_col_readme_dlg)
 
@@ -387,8 +387,7 @@ class Ui():
         
         # 外观页面
         # ft.Divider(),
-        self.AboutTab_Stuff = ft.Column(controls=[ft.Text("此工具箱在Github上发布",size=22),ft.Text("由笨比ZiHao一人独自开发",size=22,bgcolor="cyan"),ft.Text("愿我们的电脑课都不再无聊~🥳",size=22),ft.ElevatedButton("点我打开工具箱Github页",on_click=opengithubres,on_long_press=self.open_devmode)])
-
+    
         
         # ft.icons.LOOKS
 
@@ -467,6 +466,7 @@ class Ui():
         self.page.title = self.ver + " - Dev Mode"
         self.show_snakemessage("开发者模式已启用")
         self.page.update()
+        self.selPages_Helper(self.NowSelIndex)
 
         
 
@@ -529,6 +529,9 @@ class Ui():
         
     def SWC_MainPages_0(self):
         '''切换至页面0_进程管理页面'''
+        
+        self.mmpc_Stext.value = "未知 (点我更新状态)"
+        
         if self.loaded_bg ==True:
             # print("\n[DEBUG] Loaded with BG\n")
             bgb = ft.Stack(controls=[self.col_imgbg,self.funcTab_Stuff])
@@ -623,24 +626,26 @@ class Ui():
         else:
             self.show_snakemessage("保存拦截命令成功")
 
+    def update_replace_status(self,e):
+        '''更新替换程序状态检查'''
+        
+        if check_tihuan_SCRY_status():
+            self.show_snakemessage("检测到目录下已有ScreenRender_Y.exe")
+            self.replace_status.value = "已替换"
+        else:
+            self.show_snakemessage("未检测到ScreenRender_Y.exe\n也许未执行替换或替换过程被打断")
+            self.replace_status.value = "未替换"
+            
+        self.page.update()
+        
+
     def SWC_MainPages_2(self):
         '''切换至页面2_控屏管理界面'''
 
+        self.replace_status = ft.TextField(label="替换程序状态", value="未知 (点我更新状态)",read_only=True,on_focus=self.update_replace_status,text_align=ft.TextAlign.CENTER)
 
-
-        if self.dev_mode==False:
-
-            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
-        else:
-            
-            # self.page.window_min_height = 650
-            self.page.window_height = 715
-            # 修复 issue21 // 启用开发者模式时 快捷键全屏广播无法使用 //
-            # 其实也算不上Bug吧.. 自己把窗口拉长一点然后再切回来刷新就可以了()
-            
-            
-            self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn,self.col_readme_dig,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
-
+        self.ConlTab_Stuff = ft.Column([self.yiyanshowtext,ft.Divider(height=1),self.col_readme_dig,self.replace_status,self.tihuan_scr,self.try_read_sharecmd,self.RunFullSC_btn,self.KillSCR_btn,self.restone_scr,self.runwindows_swc,self.KillSCR_swc,self.RunFullSC_swc])
+        
         
         if self.loaded_bg ==True:
 
@@ -703,6 +708,17 @@ class Ui():
     def SWC_MainPages_4(self):
         '''切换至页面4_关于界面'''
         # print("Func Run SWC 4")
+        
+        if self.dev_mode==False:
+            
+            self.AboutTab_Stuff = ft.Column(controls=[ft.Text("此工具箱在Github上发布",size=22),ft.Text("由笨比ZiHao一人独自开发",size=22,bgcolor="cyan"),ft.Text("愿我们的电脑课都不再无聊~🥳",size=22),ft.ElevatedButton("点我打开工具箱Github页",on_click=opengithubres,on_long_press=self.open_devmode)])
+        else:
+            
+            self.AboutTab_Stuff = ft.Column(controls=[ft.Text("此工具箱在Github上发布",size=22),ft.Text("由笨比ZiHao一人独自开发",size=22,bgcolor="cyan"),ft.Text("愿我们的电脑课都不再无聊~🥳",size=22),ft.ElevatedButton("点我打开工具箱Github页",on_click=opengithubres,on_long_press=self.open_devmode),ft.VerticalDivider(width=2),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn])
+        
+        
+        
+        
         if self.loaded_bg ==True:
             # print("\n[DEBUG] Loaded with BG\n")
             bgb = ft.Stack(controls=[self.col_imgbg,self.AboutTab_Stuff])
