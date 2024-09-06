@@ -26,14 +26,9 @@ class Ui():
 
     def __init__(self) -> None:
         
-        self.ver = "OsEasy-ToolBox v1.7 RC"
+        self.ver = "OsEasy-ToolBox v1.7 Beta3 (Dev)"
 
-        self.dev_mode = False
-        # 开发者模式 解锁高级功能
 
-        if self.dev_mode == True:
-            self.ver += " - DEV MODE"
-        
         # self.bgpath = None # 初始化背景路径变量
         # AttributeError: 'Ui' object has no attribute 'bgpath'
         
@@ -380,21 +375,9 @@ class Ui():
 
         self.try_read_sharecmd = ft.FilledTonalButton(text="运行窗口化广播命令",on_click=self.Get_yccmd_loj,icon=ft.icons.WINDOW_SHARP)
 
-
-
         
         self.waiguanTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.ztqhb,self.remove_rem,self.zitibtn,self.bgfilepick,self.bgtmd_text,self.bgtmdb,self.yiyanbtn])
         
-        # 外观页面
-        # ft.Divider(),
-    
-        
-        # ft.icons.LOOKS
-
-        
-        # self.show_snakemessage("欢迎回来")
-        # testbtn = ft.ElevatedButton("Test",on_click=lambda _:self.show_snakemessage("123"))
-        # self.page.add(self.ztqhb)
         
         self.MyRail = ft.NavigationRail(
         selected_index=0,
@@ -460,13 +443,13 @@ class Ui():
             self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
         pass
 
-    def open_devmode(self,e):
-        '''隐藏功能 手动打开开发者模式'''
-        self.dev_mode = True
-        self.page.title = self.ver + " - Dev Mode"
-        self.show_snakemessage("开发者模式已启用")
-        self.page.update()
-        self.selPages_Helper(self.NowSelIndex)
+    # def open_devmode(self,e):
+    #     '''隐藏功能 手动打开开发者模式'''
+    #     self.dev_mode = True
+    #     self.page.title = self.ver + " - Dev Mode"
+    #     self.show_snakemessage("开发者模式已启用")
+    #     self.page.update()
+    #     self.selPages_Helper(self.NowSelIndex)
 
         
 
@@ -708,15 +691,8 @@ class Ui():
     def SWC_MainPages_4(self):
         '''切换至页面4_关于界面'''
         # print("Func Run SWC 4")
-        
-        if self.dev_mode==False:
-            
-            self.AboutTab_Stuff = ft.Column(controls=[ft.Text("此工具箱在Github上发布",size=22),ft.Text("由笨比ZiHao一人独自开发",size=22,bgcolor="cyan"),ft.Text("愿我们的电脑课都不再无聊~🥳",size=22),ft.ElevatedButton("点我打开工具箱Github页",on_click=opengithubres,on_long_press=self.open_devmode)])
-        else:
-            
-            self.AboutTab_Stuff = ft.Column(controls=[ft.Text("此工具箱在Github上发布",size=22),ft.Text("由笨比ZiHao一人独自开发",size=22,bgcolor="cyan"),ft.Text("愿我们的电脑课都不再无聊~🥳",size=22),ft.ElevatedButton("点我打开工具箱Github页",on_click=opengithubres,on_long_press=self.open_devmode),ft.VerticalDivider(width=2),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn])
-        
-        
+
+        self.AboutTab_Stuff = ft.Column(controls=[ft.Text("此工具箱在Github上发布",size=22),ft.Text("由笨比ZiHao一人独自开发",size=22,bgcolor="cyan"),ft.Text("愿我们的电脑课都不再无聊~🥳",size=22),ft.ElevatedButton("点我打开工具箱Github页",on_click=opengithubres),ft.VerticalDivider(width=2),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn])
         
         
         if self.loaded_bg ==True:
@@ -732,17 +708,13 @@ class Ui():
             
         
         else:
-            # print("\n[DEBUG] UnLoaded with BG\n")
-            # nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),ft.Column([self.yiyanshowtext,self.funcTab_Stuff])],expand=True)
+
             nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=0),self.AboutTab_Stuff],height=self.page.window_height,width=self.page.window_width)
             self.page.clean()
             self.page.update()
             self.page.add(nedadd)
             self.page.update()
             
-            
-        
-        pass
 
     def added_pickdialog(self):
         '''添加文件选择对话框'''
@@ -753,11 +725,7 @@ class Ui():
 
     def reflashbg(self):
         '''刷新背景'''
-        # if have_img_bg ==True:
-        # print("debug > runed reflashbg func")
-        # print("[DEBUG] imgpath",self.bgpath)
-        # print("[DEBUG] opactiy get",self.bgtmd)
-        # col_imgbg =  ft.Image(src=f"{bgpath}",opacity=bgtmd)
+
         fm = open(path_zidingyi_bg,'w')
         fm.write(str(self.bgpath))
         fm.close()
@@ -769,49 +737,8 @@ class Ui():
         exc = "ToolBox.SWC_MainPages_" + self.NowSelIndex + "()"
         
         # print("DEBUG exc > ",exc)
+        
         eval(exc)
-        
-        # col_imgbg = ft.Image(src=f"{bgpath}",fit="CONTAIN",opacity=0.6)
-        
-        # pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
-        # selected_files = ft.Text()
-        # bgfilepick = ft.ElevatedButton("选择背景图片", icon=ft.icons.UPLOAD_FILE,on_click=lambda _: pick_files_dialog.pick_files(allow_multiple=False,file_type="IMAGE"))
-        
-        # base1 = self.funcTab_Stuff
-        # base2 = self.waiguanTab_Stuff
-        # # base3 = ft.Column(controls=[ztqhb,bgfilepick])
-        # base3 = self.AboutTab_Stuff
-        
-        # bg_tab1_stuff = ft.Stack(controls=[col_imgbg,base1])
-        # bg_tab2_stuff = ft.Stack(controls=[col_imgbg,base2])
-        # bg_tab3_stuff = ft.Stack(controls=[col_imgbg,base3])
-        
-        # # bg_tab1 = ft.Tab(text="一键策略",icon=ft.icons.ACCESSIBLE_FORWARD,content=bg_tab1_stuff)
-        # bg_tab1 = ft.Tab(text="功能",icon=ft.icons.AUTO_AWESOME,content=bg_tab1_stuff)
-        
-        # bg_tab2 = ft.Tab(text="外观",icon=ft.icons.CODE_SHARP,content=bg_tab2_stuff)
-
-        # bg_tab3 = ft.Tab(text="关于",icon=ft.icons.FAVORITE,content=bg_tab3_stuff)
-        
-        # indextabs = [bg_tab1,bg_tab2,bg_tab3]
-    
-        # bg_tab = ft.Tabs(selected_index=1,animation_duration=255,tabs=indextabs,expand=1,on_change=self.pickrandomyiyan)
-        # # bg_tab = ft.Tabs(selected_index=2,animation_duration=255,tabs=indextabs,expand=1)
-        # # tab3 = ft.Tab(text="杂项",icon=ft.icons.CODE_SHARP,content=tab3_stuff)
-        # self.page.controls.clear()
-        # self.page.clean()
-        # self.page.add(bg_tab)
-        # self.page.update()
-        # # page.add(pick_files_dialog,yiyan_pick_files_dialog,font_pick_files_dialog)
-        # for idlg in self.list_all_pickdialog:
-        #     self.page.add(idlg)
-        #     self.page.update()
-
-
-        # # page.controls.append()
-        # # page.add(bg_tab,pick_files_dialog,yiyan_pick_files_dialog)
-        # self.page.update()
-        # page.update()
     
         
     def guaqi_chufa(self,e):

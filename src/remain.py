@@ -405,7 +405,15 @@ def summon_unlocknet():
     global cmdpath
     mp = cmdpath + "\\net.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxUnlockNetHeler\n:a\ntaskkill /f /t /im Student.exe\ntaskkill /f /t /im DeviceControl_x64.exe\ngoto a"
+    cmdtext = """@ECHO OFF\n
+    title OsEasyToolBoxUnlockNetHeler\n
+    :a\n
+    wmic process where name="Student.exe" delete\n
+    wmic process where name="DeviceControl_x64.exe" delete\n
+    taskkill /f /t /im Student.exe\n
+    taskkill /f /t /im DeviceControl_x64.exe\n
+    goto a
+    """
     fm.write(cmdtext)
     fm.close()
 
@@ -434,7 +442,18 @@ def summon_killer():
     global cmdpath
     mp = cmdpath + "\\k.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxKiller\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im MultiClient.exe\ntaskkill /f /t /im BlackSlient.exe\n:a\ntaskkill /f /t /im Student.exe\ngoto a"
+    cmdtext = """@ECHO OFF\n
+    title OsEasyToolBoxKiller\n
+    wmic process where name="MultiClient.exe" delete\n
+    wmic process where name="MultiClient.exe" delete\n
+    wmic process where name="BlackSlient.exe" delete\n
+    taskkill /f /t /im MultiClient.exe\n
+    taskkill /f /t /im MultiClient.exe\n
+    taskkill /f /t /im BlackSlient.exe\n
+    :a\n
+    taskkill /f /t /im Student.exe\n
+    wmic process where name="Student.exe" delete\n
+    goto a"""
     fm.write(cmdtext)
     fm.close()
 
