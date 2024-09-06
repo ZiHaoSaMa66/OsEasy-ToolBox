@@ -7,27 +7,30 @@
 ![GitHub all releases download](https://img.shields.io/github/downloads/ZiHaoSaMa66/OsEasy-ToolBox/total?style=for-the-badge&label=%E6%80%BB%E4%B8%8B%E8%BD%BD%E9%87%8F&color=orange)
 ![GitHub Repo stars](https://img.shields.io/github/stars/ZiHaoSaMa66/OsEasy-ToolBox?style=for-the-badge&color=yellow)
 
+> [!NOTE]  
 > 推荐优先使用稳定版    
 > 最新版拥有新特性    
 > 但是可能存在潜在未发现的Bug     
 > ~~稳定版也保不准没有bug（）~~          
 
-网上几乎搜不到针对噢易的有效制裁工具     
-(至少在我着手开发的时候是没找到一点..)     
-(搜到的都是什么~~人机~~噢易的官网)    
-搜来搜去实在找不到只能自己动手丰衣足食了   
-如果你学校的电脑是**win7系统**的请使用[轻量版工具箱! (已暂时摆烂停更)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox-Lite)     
-**工具箱需要以管理员权限运行!**   
-适用于``V10.8.2.4411``桌面云环境的噢易学生端      
+> [!IMPORTANT]
+> **工具箱需要以管理员权限运行!**   
+> 适用于``V10.8.2.4411``桌面云环境的噢易学生端      
+> ***不保证功能在其他版本的噢易学生端中均可用***     
+> 如果你学校的电脑是**win7系统**的请使用[轻量版工具箱! (已暂时摆烂停更)](https://github.com/ZiHaoSaMa66/OsEasy-ToolBox-Lite)     
+
+> 这是一些~~废话~~(     
+> 网上几乎搜不到针对噢易的有效制裁工具     
+> (至少在我着手开发的时候是没找到一点..)     
+> (搜到的都是什么~~人机~~噢易的官网)    
+> 搜来搜去实在找不到只能自己动手丰衣足食了   
 > 但是只能说勉强能用 哥们编程也就那样了💦💦    
 > 至少我自己的电脑课上是能用的😎       
  
-
-#### ✨工具箱目前支持功能✨
-
 ### **[点我看实战演示视频! (BiliBili)](https://www.bilibili.com/video/BV12ZgeetEWr)**
 
-***不保证功能在其他版本的噢易学生端中均可用***
+
+### ✨工具箱目前支持功能✨
 
 <details>
 <summary>点击展开查看</summary>
@@ -107,10 +110,7 @@
 
 ### 🌈 最后的最后..
 如果你喜欢我的破工具箱可以点个⭐Star⭐   
-
-> 这对我真的很重要!!    
-> (谁不想看到自己付诸几个月的心血有反馈呢)     
-> 如果可以的话... 点一个吧plz qwq     
+感谢有你们的Star鼓励💖     
 
 有问题&发现Bug&提供建议可以提提issue     
 同时如果你有兴趣也可以开开PR    
