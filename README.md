@@ -1,4 +1,4 @@
-![BakaToolBox](https://socialify.git.ci/ZiHaoSaMa66/OsEasy-ToolBox/image?description=1&descriptionEditable=%E7%AE%80%E9%99%8B%E7%9A%84%E5%99%A2%E6%98%93%E5%A4%9A%E5%AA%92%E4%BD%93%E7%BD%91%E7%BB%9C%E6%95%99%E5%AE%A4%E5%B7%A5%E5%85%B7%E7%AE%B1&font=Jost&issues=1&language=1&logo=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F134737096&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Auto)
+![OsEasy-ToolBox](https://socialify.git.ci/ZiHaoSaMa66/OsEasy-ToolBox/image?description=1&descriptionEditable=A%20Simple%20Python%20ToolBox%20for%20OsEasyTeachingSystem&font=Source%20Code%20Pro&issues=1&language=1&logo=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F134737096&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Dark)
 
 ---
 
