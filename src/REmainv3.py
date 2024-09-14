@@ -97,7 +97,7 @@ class Ui():
                     runcmd(builded)
                     # Fix 黑框
             
-    def dic_RunFullSC(self,e):
+    def dic_RunFullSC(self,*e):
         '''按钮点击直接运行全屏广播指令'''
         status = get_yuancheng_cmd()
 
@@ -131,7 +131,7 @@ class Ui():
             runcmd("taskkill /f /t /im ScreenRender_Y.exe")
             runcmd("taskkill /f /t /im ScreenRender.exe")
 
-    def dic_KillSCR(self,e):
+    def dic_KillSCR(self,*e):
         '''点击按钮直接杀屏幕广播进程'''
         runcmd("taskkill /f /t /im ScreenRender_Y.exe")
         runcmd("taskkill /f /t /im ScreenRender.exe")
@@ -171,7 +171,7 @@ class Ui():
 
         pass
 
-    def theme_changed(self,e):
+    def theme_changed(self,*e):
 
         self.page.theme_mode = (
             ft.ThemeMode.DARK
@@ -180,7 +180,7 @@ class Ui():
         self.ztqhb.label = ("亮色主题" if self.page.theme_mode == ft.ThemeMode.LIGHT else "暗色主题")
         self.page.update()
         
-    def change_bg_btmd(self,e):
+    def change_bg_btmd(self,*e):
         '''改变背景图片不透明度的信号触发函数'''
 
         self.bgtmd = e.control.value
@@ -234,7 +234,7 @@ class Ui():
         else:
             selfunc_g3(xueze)
 
-    def open_askdel_dlg(self,e):
+    def open_askdel_dlg(self,*e):
         self.page.dialog = self.unlock_func_askdlg
         self.unlock_func_askdlg.open = True
         self.page.update()
@@ -244,7 +244,7 @@ class Ui():
         self.show_snakemessage("Have Fun")
         self.page.update()
 
-    def open_col_readme_dlg(self,e):
+    def open_col_readme_dlg(self,*e):
         self.page.dialog = self.col_readme_dlg
         self.col_readme_dlg.open = True
         self.page.update()
@@ -409,7 +409,7 @@ class Ui():
     # on_change=lambda e: print("Selected destination:", e.control.selected_index)
 
         # self.base_mix = ft.Row(self.Rail , ft.VerticalDivider(width=1))
-        self.pickrandomyiyan("fk TypeError")
+        self.pickrandomyiyan()
         
         self.SWC_MainPages_0()
         
@@ -417,9 +417,9 @@ class Ui():
         
         self.try_get_history_path()
 
-        self.reflashStudentPath("eee")
+        self.reflashStudentPath()
 
-    def reflashStudentPath(self,e):
+    def reflashStudentPath(self,*e):
         global oseasypath
         '''重新获取学生端路径\n
         设计上的一点问题.. 干活的函数没办法直接弹窗\n
@@ -435,7 +435,7 @@ class Ui():
             self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
         pass
 
-    # def open_devmode(self,e):
+    # def open_devmode(self,*e):
     #     '''隐藏功能 手动打开开发者模式'''
     #     self.dev_mode = True
     #     self.page.title = self.ver + " - Dev Mode"
@@ -445,7 +445,7 @@ class Ui():
 
         
 
-    def HotKey_screenshot(self,e):
+    def HotKey_screenshot(self,*e):
         '''快捷键截图开关触发函数'''
         # print("DEBUG e obj > ",e)
         if self.FastGetSC.value ==True:
@@ -460,7 +460,7 @@ class Ui():
             self.JieTu_listener.stop()
         pass
 
-    def HotKey_RunFullSCR(self,e):
+    def HotKey_RunFullSCR(self,*e):
 
         if self.RunFullSC_swc.value ==True:
             # print("DEBUG 启动了全屏监听")
@@ -470,7 +470,7 @@ class Ui():
             self.RunFullSC_listener.stop()
         pass
 
-    def HotKey_KillSCR(self,e):
+    def HotKey_KillSCR(self,*e):
         '''快捷键截图开关触发函数'''
         # print("DEBUG e obj > ",e)
         if self.KillSCR_swc.value ==True:
@@ -484,7 +484,7 @@ class Ui():
         pass
 
         
-    def hotkey_runwindows(self,e):
+    def hotkey_runwindows(self,*e):
         if self.runwindows_swc.value ==True:
             
             self.runwindows_lis.run()
@@ -497,7 +497,7 @@ class Ui():
     def selPages_Helper(self,index):
         '''帮助切换页面选择器'''
         self.NowSelIndex = str(index)
-        self.pickrandomyiyan("idk")
+        self.pickrandomyiyan()
         
         exc = "ToolBox.SWC_MainPages_" + str(index) + "()"
         eval(exc)
@@ -556,7 +556,7 @@ class Ui():
         
         pass
 
-    def Get_yccmd_loj(self,e):
+    def Get_yccmd_loj(self,*e):
         '''获取远程控制命令的逻辑触发函数'''
         get = get_yuancheng_cmd()
         if get==None:
@@ -567,7 +567,7 @@ class Ui():
             # fix 黑框
         pass
 
-    def replace_SCR_loj(self,e):
+    def replace_SCR_loj(self,*e):
         '''替换SCR程序为拦截程序的逻辑触发函数'''
         ser_status = check_MMPC_status()
         if ser_status==False:
@@ -580,7 +580,7 @@ class Ui():
         else:
             self.show_snakemessage("替换拦截程序失败\n请先手动关闭学生端根服务！")
 
-    def restone_SCR_loj(self,e):
+    def restone_SCR_loj(self,*e):
         '''恢复SCR程序的逻辑触发函数'''
         ser_status = check_MMPC_status()
         if ser_status==False:
@@ -593,7 +593,7 @@ class Ui():
         else:
             self.show_snakemessage("还原拦截程序失败\n请先手动关闭学生端根服务！")
     
-    def dev_read_lj_cmd_loj(self,e):
+    def dev_read_lj_cmd_loj(self,*e):
         '''读取已拦截的命令逻辑触发函数'''
         status = save_now_yccmd()
         if status==None:
@@ -601,7 +601,7 @@ class Ui():
         else:
             self.show_snakemessage("保存拦截命令成功")
 
-    def update_replace_status(self,e):
+    def update_replace_status(self,*e):
         '''更新替换程序状态检查'''
         
         if check_tihuan_SCRY_status():
@@ -733,7 +733,7 @@ class Ui():
         eval(exc)
     
         
-    def guaqi_chufa(self,e):
+    def guaqi_chufa(self,*e):
         '''用于挂起进程开关的触发函数'''
         if self.guaqi_runstatus ==False:
             self.page.window.visible = False
@@ -764,19 +764,19 @@ class Ui():
                 self.page.update()
                 self.show_snakemessage(status)
     
-    def forunlocknettips(self,e):
+    def forunlocknettips(self,*e):
         self.show_snakemessage("解锁网络锁定中 请稍等")
         selfunc_g7()
         self.show_snakemessage("执行完成 理论上网络已解锁")
     
-    def usb_unlock_tips(self,e):
+    def usb_unlock_tips(self,*e):
         self.show_snakemessage("尝试解锁USB... 请稍等 \n实验性功能 未进行实机测试 可能无效")
 
         usb_unlock()
 
         self.show_snakemessage("解锁完成 请自行查看解锁是否有效\n实验性功能 可能无效")
         
-    def pickrandomyiyan(self,e):
+    def pickrandomyiyan(self,*e):
         '''挑选一个随机一言'''
 
         if self.defult_yy==False:
@@ -825,7 +825,7 @@ class Ui():
             self.show_snakemessage(f"加载外部一言时出现{e}异常")
         pass
 
-    def change_bg_btmd(self,e):
+    def change_bg_btmd(self,*e):
         '''改变背景图片不透明度的信号触发函数'''
         self.bgtmd = e.control.value
         self.reflashbg()
@@ -894,7 +894,7 @@ class Ui():
             self.show_snakemessage("未选择背景图片")
             pass
 
-    def only_update_MMPC_status(self,e):
+    def only_update_MMPC_status(self,*e):
         '''仅更新MMPC根服务状态'''
         st = check_MMPC_status()
         if st==True:
@@ -905,7 +905,7 @@ class Ui():
             self.page.update()
         
         
-    def MMPC_shutdown_start_chufa(self,e):
+    def MMPC_shutdown_start_chufa(self,*e):
         '''关闭/开启MMPC根服务的触发函数'''
         st = check_MMPC_status()
         if st==True:

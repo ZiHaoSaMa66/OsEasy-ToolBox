@@ -289,7 +289,7 @@ def run_upto_admin():
         ctypes.windll.shell32.ShellExecuteW(None,"runas",sys.executable,"".join(sys.argv),None,1)
         sys.exit()
 
-def del_historyrem(e):
+def del_historyrem(*e):
     '''删除保存的历史路径文件'''
     neddel = [path_zidingyi_bg,path_zidingyi_fort,path_zidingyi_yiyan]
     for name in neddel:
@@ -344,7 +344,7 @@ def onetime_protectcheck():
         summon_killer()
         runbat("k.bat")
 
-def opengithubres(e):
+def opengithubres(*e):
     '''在浏览器打开github仓库页面'''
     webbrowser.open("https://github.com/ZiHaoSaMa66/OsEasy-ToolBox")
 
@@ -408,8 +408,6 @@ def summon_unlocknet():
     cmdtext = """@ECHO OFF\n
     title OsEasyToolBoxUnlockNetHeler\n
     :a\n
-    wmic process where name="Student.exe" delete\n
-    wmic process where name="DeviceControl_x64.exe" delete\n
     taskkill /f /t /im Student.exe\n
     taskkill /f /t /im DeviceControl_x64.exe\n
     goto a
@@ -444,15 +442,11 @@ def summon_killer():
     fm = open(mp,"w")
     cmdtext = """@ECHO OFF\n
     title OsEasyToolBoxKiller\n
-    wmic process where name="MultiClient.exe" delete\n
-    wmic process where name="MultiClient.exe" delete\n
-    wmic process where name="BlackSlient.exe" delete\n
     taskkill /f /t /im MultiClient.exe\n
     taskkill /f /t /im MultiClient.exe\n
     taskkill /f /t /im BlackSlient.exe\n
     :a\n
     taskkill /f /t /im Student.exe\n
-    wmic process where name="Student.exe" delete\n
     goto a"""
     fm.write(cmdtext)
     fm.close()
@@ -472,7 +466,7 @@ def backupOeKeyDll():
         # runcmd(f'copy "{oepath}" "{needbkpath}"\npause')
         runcmd(f'copy "{oepath}" "{needbkpath}"')
 
-def restoneBlackSlt(e):
+def restoneBlackSlt(*e):
     '''恢复黑屏安静程序'''
     global bkppath,oseasypath
     filename = "BlackSlient.exe"
@@ -574,46 +568,19 @@ def usecmd_runcmd(cmd:str):
     fm.close()
     runcmd(f"start {mp}")
 
-#策略
 
-# def selfunc_c1(e):
-#     #完全不听课 - 全程全脱控制 不接收文件
-#     regkillercmd()
-#     startprotect()
-    
-# def selfunc_c2(e):
-#     #稍微听点 不会被控屏 可接收文件
-#     regkillercmd()
-#     onetime_protectcheck()
-#     summon_deldll(delMtc=True,shutdown=True)
-#     showwarning("温馨提醒","该解锁略微需要手速\n在工具箱帮助你注销以后\n只要看见可以重新登录后即可点出粘滞键的脚本完成解锁")
-#     time.sleep(1.5)
-#     runbat("d.bat")
-
-# def selfunc_c3(e):
-#     #几乎全听 可被老师控屏 但可主动注销跳出控制
-#     regkillercmd()
-#     onetime_protectcheck()
-#     summon_deldll(delMtc=False,shutdown=True)
-#     showwarning("温馨提醒","该解锁略微需要手速\n在工具箱帮助你注销以后\n只要看见可以重新登录后即可点出粘滞键的脚本完成解锁")
-#     time.sleep(1.5)
-#     runbat("d.bat")
-#     pass
-
-#快捷功能类
-
-def selfunc_g0(e):
+def selfunc_g0(*e):
     #清理生成的脚本文件
     delcmdfiles()
-def selfunc_g1(e):
+def selfunc_g1(*e):
     #注册粘滞键替换击杀脚本
     regkillercmd()
     
-def selfunc_g1plus(e):
+def selfunc_g1plus(*e):
     #注册V2版本的替换击杀脚本
         regkillerV2cmd()
 
-def selfunc_g2(e):
+def selfunc_g2(*e):
     global RunBoxKiller
     # result = askquestion("温馨提示","此功能为半成品功能\n是否继续?")
     # # print(result)
@@ -634,14 +601,14 @@ def selfunc_g3(need_shutdown:bool):
     time.sleep(2)
     runbat("d.bat")
     
-def selfunc_g4(e):
+def selfunc_g4(*e):
     global oseasypath
     usecmd_runcmd(f'"{oseasypath}Student.exe"')
 
-def selfunc_g5(e):
+def selfunc_g5(*e):
     restoneKeyDll()
 
-def selfunc_g6(e):
+def selfunc_g6(*e):
     global RunProtectCMD
     if RunProtectCMD ==False:
         RunProtectCMD = True
@@ -662,7 +629,7 @@ def selfunc_g7():
     usecmd_runcmd('taskkill /f /t /fi "imagename eq cmd.exe" /fi "windowtitle eq 管理员:  OsEasyToolBoxUnlockNetHeler"')
     time.sleep(1)
 
-def selfunc_g8(e):
+def selfunc_g8(*e):
     # print("执行功能8 请稍等...")
     regkillercmd()
     onetime_protectcheck()
