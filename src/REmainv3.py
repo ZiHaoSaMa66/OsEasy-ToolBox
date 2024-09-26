@@ -13,7 +13,7 @@ import flet as ft
 
 import random
 
-from pynput import keyboard #首先导入模块
+from pynput import keyboard
 
 
 
@@ -652,14 +652,12 @@ class Ui():
 
     def SWC_MainPages_3(self):
         '''切换至页面3_外观调整界面'''
-        # print("Func Run SWC 3")
+        
         if self.loaded_bg ==True:
-            # print("\n[DEBUG] Loaded with BG\n")
+            
             bgb = ft.Stack(controls=[self.col_imgbg,self.waiguanTab_Stuff])
             
             nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=1),bgb],height=self.page.window_height,width=self.page.window_width)
-            
-            # nedadd = ft.Stack(controls=[self.col_imgbg,ft.Row([self.MyRail,ft.VerticalDivider(width=0),self.waiguanTab_Stuff])],expand=True)
             
             self.page.clean()
             self.page.update()
@@ -669,8 +667,8 @@ class Ui():
             self.added_pickdialog()
             
         else:
-            # print("\n[DEBUG] UnLoaded with BG\n")
-            # nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),ft.Column([self.yiyanshowtext,self.funcTab_Stuff])],expand=True)
+
+
             nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.waiguanTab_Stuff],height=self.page.window_height,width=self.page.window_width)
             self.page.clean()
             self.page.update()
@@ -684,13 +682,12 @@ class Ui():
 
     def SWC_MainPages_4(self):
         '''切换至页面4_关于界面'''
-        # print("Func Run SWC 4")
 
         self.AboutTab_Stuff = ft.Column(controls=[ft.Text("此工具箱在Github上发布",size=22),ft.Text("由笨比ZiHao一人独自开发",size=22,bgcolor="cyan"),ft.Text("愿我们的电脑课都不再无聊~🥳",size=22),ft.ElevatedButton("点我打开工具箱Github页",on_click=opengithubres),ft.VerticalDivider(width=2),self.conl_dev_saveinput,self.conl_dev_update,self.conl_dev_getyccmd_btn])
         
         
         if self.loaded_bg ==True:
-            # print("\n[DEBUG] Loaded with BG\n")
+
             bgb = ft.Stack(controls=[self.col_imgbg,self.AboutTab_Stuff])
             
             nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=0),bgb],height=self.page.window_height,width=self.page.window_width)
@@ -725,12 +722,10 @@ class Ui():
         fm.close()
         self.loaded_bg = True
         self.col_imgbg = ft.Image(src=f"{self.bgpath}",height=self.page.window_height,width=self.page.window_width-100,opacity=self.bgtmd,fit=ft.ImageFit.SCALE_DOWN)
-        
-        # print("DEBUG colimg > ",self.col_imgbg)
+    
         
         exc = "ToolBox.SWC_MainPages_" + self.NowSelIndex + "()"
         
-        # print("DEBUG exc > ",exc)
         
         eval(exc)
     
@@ -738,21 +733,19 @@ class Ui():
     def guaqi_chufa(self,*e):
         '''用于挂起进程开关的触发函数'''
         if self.guaqi_runstatus ==False:
-            self.page.window.visible = False
+            self.page.window_visible = False
             self.page.update()
             status = guaqi_process("Student.exe")
             status_ = guaqi_process("MultiClient.exe")
-            # 这样就应该能搞定了 - issue 14
-            # 如果乱玩的话 我也不知道会出什么问题 (
+
 
             if status ==True:
                 self.guaqi_runstatus = True
-                # 我真是服了大哥 忘记给补self上也是人才了
                 time.sleep(0.8)
-                self.page.window.visible = True
+                self.page.window_visible = True
                 self.page.update()
             else:
-                self.page.window.visible = True
+                self.page.window_visible = True
                 self.guaqi_sw.value = False
                 self.page.update()
                 self.show_snakemessage(status)
@@ -780,7 +773,6 @@ class Ui():
         else:
             self.show_snakemessage("请先关闭学生端根服务")
 
-        # self.show_snakemessage("解锁完成 请自行查看解锁是否有效\n实验性功能 可能无效")
         
     def pickrandomyiyan(self,*e):
         '''挑选一个随机一言'''
@@ -790,16 +782,14 @@ class Ui():
             pickindex = random.randint(0,self.ex_fullindex-1)
             self.yiyanshowtext.value = self.yiyanlist[pickindex]
             self.yiyanshowtext2.value = self.yiyanlist[pickindex]
-            # self.page.controls.append(self.yiyanshowtext)
-            # self.page.controls.append(self.yiyanshowtext2)
+            
             self.page.update()
         elif self.defult_yy ==True:
             deft_yiyanlist = ["人生苦短,我用Python","亻尔 女子","《机房课时间管理》","就让你看看...这葫芦里卖的什么药！","让我来摸个鱼吧~"]
             deft_pickindex = random.randint(0,4)
             self.yiyanshowtext.value = deft_yiyanlist[deft_pickindex]
             self.yiyanshowtext2.value = deft_yiyanlist[deft_pickindex]
-            # self.page.controls.append(self.yiyanshowtext)
-            # self.page.controls.append(self.yiyanshowtext2)
+            
             self.page.update()
 
         pass
@@ -820,14 +810,17 @@ class Ui():
         try:
             fm = open(self.yiyanfpath,'r',encoding="utf-8")
             get = fm.read()
+            
             list_get = get.split("^")
+            
             self.ex_fullindex=len(list_get)
-            # print("lenindex",ex_fullindex)
+            
             self.yiyanlist = list_get
-            # print("yiyanlist",yiyanlist)
+            
             self.defult_yy = False #关闭默认一言库
-            # reflashbg()
+            
             self.show_snakemessage("成功加载外部一言库")
+            
         except Exception as e:
             self.show_snakemessage(f"加载外部一言时出现{e}异常")
         pass
@@ -838,7 +831,7 @@ class Ui():
         self.reflashbg()
     
     def yiyan_pick_files_result(self,e: ft.FilePickerResultEvent):
-        # global yiyanfpath
+        
         try:
             _yiyanfpath = e.files[0]
             self.yiyanfpath = os.path.join(_yiyanfpath.path)
@@ -875,7 +868,6 @@ class Ui():
         self.page.update() 
         
             # sb了 不是普通括号 
-        # print("[DEBUG] ",page.fonts)
         if self.loaded_bg ==True: #防止在新加载字体时把背景冲掉
 
             self.reflashbg()
@@ -916,12 +908,10 @@ class Ui():
         '''关闭/开启MMPC根服务的触发函数'''
         st = check_MMPC_status()
         if st==True:
-            # self.mmpc_Stext.value = "正在运行"
-            # self.mmpc-Stext.bgcolor = "green"
+
             runcmd("sc stop MMPC")
         elif st== False:
-            # self.mmpc_Stext.value = "未运行"
-            # self.mmpc-Stext.bgcolor = "red"
+
             runcmd("sc start MMPC")
 
 
