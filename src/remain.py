@@ -31,7 +31,7 @@ path_zidingyi_yiyan = "C:\\Users\\Administrator\\temp\\rod\\path_yiyan.txt"
 
 
 
-
+running_student_client_ver = ""
 
 
 
@@ -48,12 +48,13 @@ os.makedirs(_loginpj,mode=0o777,exist_ok=True)
 
 def TryGetStudentPath():
     '''尝试获取学生端路径 并更新全局变量'''
-    global oseasypath
+    global oseasypath,oseasypath_have_been_modified
     Spath = get_program_path("Student.exe")
     if Spath == None:
         print("[DEBUG] > 未找到运行中的学生端")
         return False
     Spath = str(Spath).replace("/","\\").replace("Student.exe","")
+    oseasypath_have_been_modified = True
     oseasypath = Spath
     print(f"[DEBUG] > 学生端路径为：{oseasypath}")
     return oseasypath
@@ -92,14 +93,71 @@ def usb_unlock():
     # runcmd("sc delete easyusbflt")
     # time.sleep(1)
     
-    
+
 def tryGuessStudentClientVer():
     '''尝试通过检测LissHeler.exe此类旧版本没有的程序\n
     来猜测学生端版本'''
+    global oseasypath_have_been_modified,running_student_client_ver
     
+    if not oseasypath_have_been_modified:
+        _ = TryGetStudentPath()
+        
+
     
+    v10_9 = checkPointFileIsExcs(f"{oseasypath}LissHelper.exe")
+    
+    v10_8 = checkPointFileIsExcs(f"{oseasypath}MultiClient.exe")
+    
+    v10_5 = checkPointFileIsExcs(f"{oseasypath}MouseKeyBoradControl.exe")
+    
+    if v10_9:
+        print("[Student Ver Guess] maybe is v10.9 ")
+        running_student_client_ver = 109
+    elif v10_8:
+        print("[Student Ver Guess] maybe is v10.8 ")
+        running_student_client_ver = 108
+    elif v10_5:
+        print("[Student Ver Guess] maybe is v10.5 ")
+        running_student_client_ver = 105
+    else:
+        print("[Student Ver Guess] 超出检测范围 学生端本体可能损坏或路径不正确")
+        running_student_client_ver = 0
+    
+    return running_student_client_ver
     
     pass
+
+def HighVer_CloseMMPCProtectHelper():
+    '''检查学生端版本来决定\n
+    需不需要关闭MMPC保护服务\n
+    '''
+    if not running_student_client_ver:
+       _ = tryGuessStudentClientVer()
+    
+    if running_student_client_ver >= 109:
+        mpStatus = check_MMPC_status()
+        if mpStatus:
+            runcmd("sc stop MMPC")
+            time.sleep(1)
+
+    pass
+
+def HighVer_AddCloseMMPC_CommandLine():
+    '''检查学生端版本来决定\n
+    需不需要向脚本追加关闭MMPC保护服务的命令\n
+    '''
+    global running_student_client_ver
+    
+    if not running_student_client_ver:
+       _ = tryGuessStudentClientVer()
+       
+    if running_student_client_ver >= 109:
+        return "sc stop MMPC\n"
+    return ""
+
+
+
+    
 
 def checkPointFileIsExcs(filePath) -> bool:
     '''检查传入路径的指定文件是否存在\n
@@ -416,8 +474,9 @@ def summon_unlocknet():
     global cmdpath
     mp = cmdpath + "\\net.bat"
     fm = open(mp,"w")
-    cmdtext = """@ECHO OFF\n
+    cmdtext = f"""@ECHO OFF\n
     title OsEasyToolBoxUnlockNetHeler\n
+    {HighVer_AddCloseMMPC_CommandLine()}
     :a\n
     taskkill /f /t /im Student.exe\n
     taskkill /f /t /im DeviceControl_x64.exe\n
@@ -461,8 +520,11 @@ def summon_killer():
     global cmdpath
     mp = cmdpath + "\\k.bat"
     fm = open(mp,"w")
-    cmdtext = """@ECHO OFF\n
+    cmdtext = f"""@ECHO OFF\n
     title OsEasyToolBoxKiller\n
+    
+    {HighVer_AddCloseMMPC_CommandLine()}
+    
     taskkill /f /t /im MultiClient.exe\n
     taskkill /f /t /im MultiClient.exe\n
     taskkill /f /t /im BlackSlient.exe\n
