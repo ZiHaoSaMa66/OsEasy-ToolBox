@@ -83,14 +83,37 @@ def getIfStudentPathHasModified():
 def usb_unlock():
     '''尝试解锁USB管控'''
     # 经过了好一段时间的研究可能真的就这样?
+    summon_unlocknet()
     summon_unlock_usb()
-    runbat("usb.bat")
+    runbat('net.bat')
     time.sleep(2)
-    runcmd("sc delete easyusbflt")
-    time.sleep(1)
+    runbat("usb.bat")
+    # time.sleep(2)
+    # runcmd("sc delete easyusbflt")
+    # time.sleep(1)
     
+    
+def tryGuessStudentClientVer():
+    '''尝试通过检测LissHeler.exe此类旧版本没有的程序\n
+    来猜测学生端版本'''
+    
+    
+    
+    pass
 
-    
+def checkPointFileIsExcs(filePath) -> bool:
+    '''检查传入路径的指定文件是否存在\n
+    返回True/False'''
+    try:
+        with open(filePath,'r') as f:
+            pass
+        return True
+    except FileNotFoundError:
+        return False
+    except Exception as err:
+        print(f"[ERR] 在检查 `{filePath}` 文件是否存在是被抛出异常{err}")
+    pass
+
 
 def replace_ScreenRender():
         '''替换原有scr用于拦截远程命令'''
@@ -107,11 +130,7 @@ def replace_ScreenRender():
         # print("DEBUG > nowcurhelper",nowcurhelper)
         
         onetime_protectcheck()
-        try:
-            fm = open(nowcurhelper,'r') 
-            # 检查ScreenRender_Helper.exe是否与工具箱处在同一目录
-            fm.close()
-        except FileNotFoundError:
+        if not checkPointFileIsExcs(nowcurhelper):
             return False
 
         # print("执行重命名")
@@ -211,12 +230,14 @@ def check_tihuan_SCRY_status():
     \n返回True/False'''
     global oseasypath
     check_path = f"{oseasypath}ScreenRender_Y.exe"
-    try:
-        fm = open(check_path,'r')
-        fm.close()
-        return True
-    except FileNotFoundError:
-        return False
+    # try:
+    #     fm = open(check_path,'r')
+    #     fm.close()
+    #     return True
+    # except FileNotFoundError:
+    #     return False
+    
+    return checkPointFileIsExcs(check_path)
     
 
 
@@ -354,25 +375,15 @@ def opengithubres(*e):
 def startprotect():
     global RunProtectCMD
     '''启动守护进程'''
-    # print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-    # print("--------------------------------")
-    # print("Protect Progress Start!")
-    # print("守护进程启动...")
-    # print("--------------------------------")
     ptct = 0
     while RunProtectCMD==True:
         try:
-            #print("[Protect Check] 检查进程状态?\n")
             window = gw.getWindowsWithTitle('OsEasyToolBoxKiller')[0]
             time.sleep(0.5)
         except:
-            # print("[info] 未检测到运行,将尝试重启进程\n")
             runbat("k.bat")
             ptct += 1
-            # print(f"[√] 已成功为您守护{ptct}次进程")
             time.sleep(1)
-    # print("")
-
 
 
 
@@ -420,7 +431,17 @@ def summon_unlock_usb():
     global cmdpath
     mp = cmdpath + "\\usb.bat"
     fm = open(mp,"w")
-    cmdtext = "@ECHO OFF\ntitle OsEasyToolBoxUnlockUSBHeler\n:a\ntaskkill /f /t /im DeviceControl_x64.exe\ngoto a"
+    cmdtext = """@ECHO OFF\n
+    title OsEasyToolBoxUnlockUSBHeler\n
+
+    sc delete easyusbflt\n
+    sc delete easyusbflt\n
+    timeout 1\n
+    
+    del C:\Windows\System32\drivers\easyusbflt.sys\n
+    timeout 5\n
+    shutdown /l\n
+    """
     fm.write(cmdtext)
     fm.close()
 

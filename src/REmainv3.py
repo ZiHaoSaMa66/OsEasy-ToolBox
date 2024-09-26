@@ -9,6 +9,8 @@ if fstst ==True:
 #fixed pyqt bind to autodesk360 dll
 
 import flet as ft
+# 0.21.2
+
 import random
 
 from pynput import keyboard #首先导入模块
@@ -26,11 +28,8 @@ class Ui():
 
     def __init__(self) -> None:
         
-        self.ver = "OsEasy-ToolBox v1.7 Beta3 (Dev2)"
+        self.ver = "OsEasy-ToolBox v1.7 Beta3 (Dev3)"
 
-
-        # self.bgpath = None # 初始化背景路径变量
-        # AttributeError: 'Ui' object has no attribute 'bgpath'
         
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -257,15 +256,18 @@ class Ui():
         self.page.theme = ft.Theme(font_family="ht")
         self.page.update()
         
-        self.page.window.height = 615
-        self.page.window.width = 450
+        self.page.window_height = 615
+        self.page.window_width = 450
         
-        self.page.window.max_height = 2000
-        self.page.window.max_width = 455
+        self.page.window_max_height = 2000
+        self.page.window_max_width = 455
+        
+        self.page.window_min_height = 500
+        self.page.window_min_width = 449
 
 
-        self.page.window.min_height = 500
-        self.page.window.min_width = 449
+        self.page.window_min_height = 500
+        self.page.window_min_width = 449
         
         self.page.update()
         pass
@@ -511,7 +513,7 @@ class Ui():
             # print("\n[DEBUG] Loaded with BG\n")
             bgb = ft.Stack(controls=[self.col_imgbg,self.funcTab_Stuff])
             
-            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=0),bgb],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=0),bgb],height=self.page.window_height,width=self.page.window_width)            
             
             self.page.clean()
             self.page.update()
@@ -521,7 +523,7 @@ class Ui():
         else:
             # print("\n[DEBUG] UnLoaded with BG\n")
             # nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),ft.Column([self.yiyanshowtext,self.funcTab_Stuff])],expand=True)
-            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.funcTab_Stuff],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.funcTab_Stuff],height=self.page.window_height,width=self.page.window_width)
             self.page.clean()
             self.page.update()
             self.page.add(nedadd)
@@ -538,7 +540,7 @@ class Ui():
             # print("\n[DEBUG] Loaded with BG\n")
             bgb = ft.Stack(controls=[self.col_imgbg,self.func_SecondTab_Stuff])
             
-            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=0),bgb],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=0),bgb],height=self.page.window_height,width=self.page.window_width)
             
             self.page.clean()
             self.page.update()
@@ -548,7 +550,7 @@ class Ui():
         else:
             # print("\n[DEBUG] UnLoaded with BG\n")
             # nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),ft.Column([self.yiyanshowtext,self.funcTab_Stuff])],expand=True)
-            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.func_SecondTab_Stuff],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.func_SecondTab_Stuff],height=self.page.window_height,width=self.page.window_width)
             self.page.clean()
             self.page.update()
             self.page.add(nedadd)
@@ -626,7 +628,7 @@ class Ui():
 
             bgb = ft.Stack(controls=[self.col_imgbg,self.ConlTab_Stuff])
             
-            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=1),bgb],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=1),bgb],height=self.page.window_height,width=self.page.window_width)
             
 
             self.page.clean()
@@ -638,7 +640,7 @@ class Ui():
             
         else:
 
-            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.ConlTab_Stuff],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.ConlTab_Stuff],height=self.page.window_height,width=self.page.window_width)
             self.page.clean()
             self.page.update()
             self.page.add(nedadd)
@@ -655,7 +657,7 @@ class Ui():
             # print("\n[DEBUG] Loaded with BG\n")
             bgb = ft.Stack(controls=[self.col_imgbg,self.waiguanTab_Stuff])
             
-            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=1),bgb],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=1),bgb],height=self.page.window_height,width=self.page.window_width)
             
             # nedadd = ft.Stack(controls=[self.col_imgbg,ft.Row([self.MyRail,ft.VerticalDivider(width=0),self.waiguanTab_Stuff])],expand=True)
             
@@ -669,7 +671,7 @@ class Ui():
         else:
             # print("\n[DEBUG] UnLoaded with BG\n")
             # nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),ft.Column([self.yiyanshowtext,self.funcTab_Stuff])],expand=True)
-            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.waiguanTab_Stuff],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),self.waiguanTab_Stuff],height=self.page.window_height,width=self.page.window_width)
             self.page.clean()
             self.page.update()
             self.page.add(nedadd)
@@ -691,7 +693,7 @@ class Ui():
             # print("\n[DEBUG] Loaded with BG\n")
             bgb = ft.Stack(controls=[self.col_imgbg,self.AboutTab_Stuff])
             
-            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=0),bgb],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail,ft.VerticalDivider(width=0),bgb],height=self.page.window_height,width=self.page.window_width)
             
             self.page.clean()
             self.page.update()
@@ -701,7 +703,7 @@ class Ui():
         
         else:
 
-            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=0),self.AboutTab_Stuff],height=self.page.window.height,width=self.page.window.width)
+            nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=0),self.AboutTab_Stuff],height=self.page.window_height,width=self.page.window_width)
             self.page.clean()
             self.page.update()
             self.page.add(nedadd)
@@ -722,7 +724,7 @@ class Ui():
         fm.write(str(self.bgpath))
         fm.close()
         self.loaded_bg = True
-        self.col_imgbg = ft.Image(src=f"{self.bgpath}",height=self.page.window.height,width=self.page.window.width-100,opacity=self.bgtmd,fit=ft.ImageFit.SCALE_DOWN)
+        self.col_imgbg = ft.Image(src=f"{self.bgpath}",height=self.page.window_height,width=self.page.window_width-100,opacity=self.bgtmd,fit=ft.ImageFit.SCALE_DOWN)
         
         # print("DEBUG colimg > ",self.col_imgbg)
         
@@ -770,11 +772,15 @@ class Ui():
         self.show_snakemessage("执行完成 理论上网络已解锁")
     
     def usb_unlock_tips(self,*e):
-        self.show_snakemessage("尝试解锁USB... 请稍等 \n实验性功能 未进行实机测试 可能无效")
+        
+        if not check_MMPC_status():
+            self.show_snakemessage("尝试解锁USB... 请稍等 \n实验性功能 未进行实机测试 可能无效")
 
-        usb_unlock()
+            usb_unlock()
+        else:
+            self.show_snakemessage("请先关闭学生端根服务")
 
-        self.show_snakemessage("解锁完成 请自行查看解锁是否有效\n实验性功能 可能无效")
+        # self.show_snakemessage("解锁完成 请自行查看解锁是否有效\n实验性功能 可能无效")
         
     def pickrandomyiyan(self,*e):
         '''挑选一个随机一言'''
@@ -799,9 +805,10 @@ class Ui():
         pass
     def show_snakemessage(self,showtext:str):
         '''展示一条底部消息'''
-        # page.snack_bar = ft.SnackBar(content=ft.Text("Hello, world!"),action="Alright!",)
-        self.page.overlay.append(ft.SnackBar(ft.Text(showtext))) # 废弃函数更新 DeprecationWarning
-        # self.page.snack_bar.open = True
+        
+        self.page.snack_bar = ft.SnackBar(ft.Text(showtext))
+        self.page.snack_bar.open = True
+
         self.page.update()
 
     def loadyiyan(self):
