@@ -652,7 +652,7 @@ def usecmd_runcmd(cmd:str):
     runcmd(f"start {mp}")
 
 
-def selfunc_g0(*e):
+def delSummonCmdFile(*e):
     #清理生成的脚本文件
     delcmdfiles()
 def selfunc_g1(*e):
@@ -663,19 +663,8 @@ def selfunc_g1plus(*e):
     #注册V2版本的替换击杀脚本
         regkillerV2cmd()
 
-def selfunc_g2(*e):
-    global RunBoxKiller
-    # result = askquestion("温馨提示","此功能为半成品功能\n是否继续?")
-    # # print(result)
-    # if result =="yes":
-    if RunBoxKiller ==False:
-        # save_loginwithoutpwd()
-        RunBoxKiller = True
-        boxkiller()
-    elif RunBoxKiller ==True:
-        RunBoxKiller = False
         
-def selfunc_g3(need_shutdown:bool):
+def delLockExeAndLogout(need_shutdown:bool):
     # showwarning("温馨提醒","此功能略微需要手速\n在工具箱帮助你注销以后\n只要看见可以重新登录后即可点出粘滞键的脚本完成解锁")
     # showwarning("温馨提醒","在注销后若无效果请手动重启机器\n(如果你的机房电脑有重启立刻还原请无视)\n(可以再次打开工具箱再次尝试注销解锁)\n并在进入系统桌面前手动点开粘滞键的击杀脚本\n若不想要注销可手动X掉命令窗口!!")
     summon_killer()
@@ -684,14 +673,14 @@ def selfunc_g3(need_shutdown:bool):
     time.sleep(2)
     runbat("d.bat")
     
-def selfunc_g4(*e):
+def handToStartStudent(*e):
     global oseasypath
     usecmd_runcmd(f'"{oseasypath}Student.exe"')
 
-def selfunc_g5(*e):
-    restoneKeyDll()
+# def selfunc_g5(*e):
+#     restoneKeyDll()
 
-def selfunc_g6(*e):
+def killerCmdProtect(*e):
     global RunProtectCMD
     if RunProtectCMD ==False:
         RunProtectCMD = True
@@ -703,7 +692,7 @@ def selfunc_g6(*e):
 
         
 
-def selfunc_g7():
+def unlockedNet():
     summon_unlocknet()
     runbat("net.bat")
     time.sleep(2)
@@ -712,7 +701,7 @@ def selfunc_g7():
     usecmd_runcmd('taskkill /f /t /fi "imagename eq cmd.exe" /fi "windowtitle eq 管理员:  OsEasyToolBoxUnlockNetHeler"')
     time.sleep(1)
 
-def selfunc_g8(*e):
+def startOsEasySelfToolBox(*e):
     # print("执行功能8 请稍等...")
     regkillercmd()
     onetime_protectcheck()

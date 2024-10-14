@@ -231,7 +231,7 @@ class Ui():
         if xueze==None:
             self.show_snakemessage("取消解锁了")
         else:
-            selfunc_g3(xueze)
+            delLockExeAndLogout(xueze)
 
     def open_askdel_dlg(self,*e):
         self.page.dialog = self.unlock_func_askdlg
@@ -339,9 +339,9 @@ class Ui():
         # self.yiyanshowtext2,ft.Divider(),
         # self.yiyanshowtext2 = self.yiyanshowtext
         
-        self.funcTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.mmpc_Stext,self.mmpc_sw,ft.FilledTonalButton(text="长按重启学生端",icon=ft.icons.RESTORE,on_long_press=selfunc_g4),ft.FilledTonalButton(text="重新获取学生端路径",icon=ft.icons.REFRESH,on_click=self.reflashStudentPath),ft.FilledTonalButton(text="注册粘滞键替换",icon=ft.icons.COPY_SHARP,on_click=selfunc_g1),ft.Switch(label="外部cmd守护进程",active_color="green",on_change=selfunc_g6),self.guaqi_sw,ft.FilledTonalButton(text="打开噢易自带工具",icon=ft.icons.OPEN_IN_NEW,on_click=selfunc_g8)])
+        self.funcTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),self.mmpc_Stext,self.mmpc_sw,ft.FilledTonalButton(text="长按重启学生端",icon=ft.icons.RESTORE,on_long_press=handToStartStudent),ft.FilledTonalButton(text="重新获取学生端路径",icon=ft.icons.REFRESH,on_click=self.reflashStudentPath),ft.FilledTonalButton(text="注册粘滞键替换",icon=ft.icons.COPY_SHARP,on_click=selfunc_g1),ft.Switch(label="外部cmd守护进程",active_color="green",on_change=killerCmdProtect),self.guaqi_sw,ft.FilledTonalButton(text="打开噢易自带工具",icon=ft.icons.OPEN_IN_NEW,on_click=startOsEasySelfToolBox)])
 
-        self.func_SecondTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),ft.FilledTonalButton(text="长按以删除脚本文件",icon=ft.icons.CLEANING_SERVICES_OUTLINED,on_long_press=selfunc_g0),ft.FilledTonalButton(text="删除键盘锁驱动&控屏锁定程序",icon=ft.icons.KEYBOARD_SHARP,on_click=self.open_askdel_dlg),ft.FilledTonalButton(text="长按恢复所有备份文件",icon=ft.icons.RESTORE,on_long_press=selfunc_g5),ft.FilledTonalButton(text="长按以恢复黑屏安静程序",icon=ft.icons.ACCOUNT_BOX,on_long_press=restoneBlackSlt),ft.FilledTonalButton(text="长按以仅恢复控屏锁定程序",icon=ft.icons.SCREEN_SHARE_SHARP,on_long_press=restoneMutClient),ft.FilledTonalButton(text="解除软件网络限制",icon=ft.icons.WIFI_PASSWORD_SHARP,on_click=self.forunlocknettips),ft.FilledTonalButton(text="[BETA] 关闭USB管控服务",icon=ft.icons.USB_SHARP,on_click=self.usb_unlock_tips),self.FastGetSC])
+        self.func_SecondTab_Stuff = ft.Column(controls=[self.yiyanshowtext,ft.Divider(height=1),ft.FilledTonalButton(text="长按以删除脚本文件",icon=ft.icons.CLEANING_SERVICES_OUTLINED,on_long_press=delSummonCmdFile),ft.FilledTonalButton(text="删除键盘锁驱动&控屏锁定程序",icon=ft.icons.KEYBOARD_SHARP,on_click=self.open_askdel_dlg),ft.FilledTonalButton(text="长按恢复所有备份文件",icon=ft.icons.RESTORE,on_long_press=lambda e:restoneKeyDll),ft.FilledTonalButton(text="长按以恢复黑屏安静程序",icon=ft.icons.ACCOUNT_BOX,on_long_press=restoneBlackSlt),ft.FilledTonalButton(text="长按以仅恢复控屏锁定程序",icon=ft.icons.SCREEN_SHARE_SHARP,on_long_press=restoneMutClient),ft.FilledTonalButton(text="解除软件网络限制",icon=ft.icons.WIFI_PASSWORD_SHARP,on_click=self.forunlocknettips),ft.FilledTonalButton(text="[BETA] 关闭USB管控服务",icon=ft.icons.USB_SHARP,on_click=self.usb_unlock_tips),self.FastGetSC])
 
 
         self.conl_dev_saveinput = ft.TextField(label="键入远程广播命令")
@@ -761,7 +761,7 @@ class Ui():
     
     def forunlocknettips(self,*e):
         self.show_snakemessage("解锁网络锁定中 请稍等")
-        selfunc_g7()
+        unlockedNet()
         self.show_snakemessage("执行完成 理论上网络已解锁")
     
     def usb_unlock_tips(self,*e):
