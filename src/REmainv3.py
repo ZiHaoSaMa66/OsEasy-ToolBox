@@ -28,7 +28,7 @@ class Ui():
 
     def __init__(self) -> None:
         
-        self.ver = "OsEasy-ToolBox v1.7 Beta3 (Dev3)"
+        self.ver = "OsEasy-ToolBox v1.7 Beta3"
 
         
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
@@ -427,12 +427,12 @@ class Ui():
         设计上的一点问题.. 干活的函数没办法直接弹窗\n
         只能用个写在UI类里多余的函数来做'''
         
-        status = TryGetStudentPath()
+        status,studentName = TryGetStudentPath()
         
         oseasypath = status
         
         if status !=False:
-            self.show_snakemessage(f"更新学生端路径成功\n{   oseasypath}")
+            self.show_snakemessage(f"更新学生端路径成功\n{oseasypath}\n学生端进程名:{studentName}")
         else:
             self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
         pass
@@ -735,7 +735,8 @@ class Ui():
         if self.guaqi_runstatus ==False:
             self.page.window_visible = False
             self.page.update()
-            status = guaqi_process("Student.exe")
+            status = guaqi_process(getStudentExeName())
+            
             status_ = guaqi_process("MultiClient.exe")
 
 
@@ -750,7 +751,7 @@ class Ui():
                 self.page.update()
                 self.show_snakemessage(status)
         else:
-            status = huifu_process("Student.exe")
+            status = huifu_process(getStudentExeName())
             status_ = huifu_process("MultiClient.exe")
             if status ==True:
                 self.guaqi_runstatus = False

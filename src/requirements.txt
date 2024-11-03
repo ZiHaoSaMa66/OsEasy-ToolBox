@@ -1,4 +1,4 @@
-flet==0.21.2
+flet==0.18.0
 pynput
 pyautogui
 psutil
