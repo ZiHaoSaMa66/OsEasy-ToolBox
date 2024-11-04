@@ -6,13 +6,13 @@ run_upto_admin()
 fstst = check_firsttime_start()
 if fstst == True:
     usecmd_runcmd(
-        'rename "C:\Program Files\Autodesk\Autodesk Sync\AdSyncNamespace.dll" "AdSyncNamespace.dll.bak"'
+        'rename "C:\\Program Files\\Autodesk\\Autodesk Sync\\AdSyncNamespace.dll" "AdSyncNamespace.dll.bak"'
     )
 # fixed pyqt bind to autodesk360 dll
 
 import flet as ft
 
-# 0.21.2
+# 0.18.0
 
 import random
 
@@ -22,14 +22,11 @@ from pynput import keyboard
 fontpath = "C:\\Windows\\Fonts\\simhei.ttf"
 
 
-# 重构一下这一坨
-
-
 class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.7 Beta3.1"
+        self.ver = "OsEasy-ToolBox v1.7 RC2 Dev"
 
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -202,47 +199,61 @@ class Ui:
         )
         self.page.update()
 
-    def change_bg_btmd(self, *e):
-        """改变背景图片不透明度的信号触发函数"""
-
-        self.bgtmd = e.control.value
-        self.reflashbg()
 
     def try_get_history_path(self):
         """尝试获取历史路径"""
         if fstst != True:
-            try:
-                fm = open(path_zidingyi_bg, "r")
-                self.bgpath = fm.read()
-                fm.close()
-                # print("[SUCC] 成功加载历史背景")
+            bgPath = ToolBoxConfig().get_style_path('bgPath')
+            if bgPath:
+                self.bgpath = bgPath
                 self.bgtmdb.disabled = False
                 self.loaded_bg = True
                 self.reflashbg()
-            except FileNotFoundError:
-                # print("[DEBUG] 未找到历史背景路径")
-                self.loaded_bg = False
-                pass
-            try:
-                fm = open(path_zidingyi_yiyan, "r")
-                self.yiyanfpath = fm.read()
-                fm.close()
-                # print("[SUCC] 成功加载历史一言")
+                
+            yiyanPath = ToolBoxConfig().get_style_path('yiyanPath')
+            if yiyanPath:
+                self.yiyanfpath = yiyanPath
                 self.loadyiyan()
-            except FileNotFoundError:
-                # print("[DEBUG] 未找到历史一言路径")
-
-                pass
-
-            try:
-                fm = open(path_zidingyi_fort, "r")
-                self.zdy_fontpath = fm.read()
-                fm.close()
-                # print("[SUCC] 成功加载历史字体")
+            
+            fontPath = ToolBoxConfig().get_style_path('fontPath')
+            if fontPath:
+                self.zdy_fontpath = fontPath
                 self.setup_zidingyi_font()
-            except FileNotFoundError:
-                # print("[DEBUG] 未找到历史自定义字体路径")
-                pass
+                
+                
+            
+            # try:
+            #     fm = open(path_zidingyi_bg, "r")
+            #     self.bgpath = fm.read()
+            #     fm.close()
+            #     # print("[SUCC] 成功加载历史背景")
+            #     self.bgtmdb.disabled = False
+            #     self.loaded_bg = True
+            #     self.reflashbg()
+            # except FileNotFoundError:
+            #     # print("[DEBUG] 未找到历史背景路径")
+            #     self.loaded_bg = False
+            #     pass
+            # try:
+            #     fm = open(path_zidingyi_yiyan, "r")
+            #     self.yiyanfpath = fm.read()
+            #     fm.close()
+            #     # print("[SUCC] 成功加载历史一言")
+            #     self.loadyiyan()
+            # except FileNotFoundError:
+            #     # print("[DEBUG] 未找到历史一言路径")
+
+            #     pass
+
+            # try:
+            #     fm = open(path_zidingyi_fort, "r")
+            #     self.zdy_fontpath = fm.read()
+            #     fm.close()
+            #     # print("[SUCC] 成功加载历史字体")
+            #     self.setup_zidingyi_font()
+            # except FileNotFoundError:
+            #     # print("[DEBUG] 未找到历史自定义字体路径")
+            #     pass
 
     def enable_usb(self):
         pass
@@ -628,48 +639,38 @@ class Ui:
         设计上的一点问题.. 干活的函数没办法直接弹窗\n
         只能用个写在UI类里多余的函数来做"""
 
-        status, studentName = TryGetStudentPath()
+        # status, studentName = TryGetStudentPath()
+        _ = tryGuessStudentClientVer()
+        # 没啥用只是顺带需要更新一下学生端版本
+        
 
-        oseasypath = status
-
-        if status != False:
+        if ToolBoxConfig().oseasypath_have_been_modified != False:
             self.show_snakemessage(
-                f"更新学生端路径成功\n{oseasypath}\n学生端进程名:{studentName}"
+                f"更新学生端路径成功\n{ToolBoxConfig().oseasypath}\n学生端进程名:{ToolBoxConfig().studentExeName}"
             )
         else:
             self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
         pass
 
-    # def open_devmode(self,*e):
-    #     '''隐藏功能 手动打开开发者模式'''
-    #     self.dev_mode = True
-    #     self.page.title = self.ver + " - Dev Mode"
-    #     self.show_snakemessage("开发者模式已启用")
-    #     self.page.update()
-    #     self.selPages_Helper(self.NowSelIndex)
-
     def HotKey_screenshot(self, *e):
         """快捷键截图开关触发函数"""
-        # print("DEBUG e obj > ",e)
+
         if self.FastGetSC.value == True:
-            # print("DEBUG 启动了屏幕截图监听")
+
             self.JieTu_listener.run()
-            # 不能使用 .start()
-            # 重复调用 即 开关一次触发
-            # RuntimeError: threads can only be started once
 
         elif self.FastGetSC.value == False:
-            # print("DEBUG 停止了屏幕截图监听")
+
             self.JieTu_listener.stop()
         pass
 
     def HotKey_RunFullSCR(self, *e):
 
         if self.RunFullSC_swc.value == True:
-            # print("DEBUG 启动了全屏监听")
+
             self.RunFullSC_listener.run()
         elif self.RunFullSC_swc.value == False:
-            # print("DEBUG 停止了全屏监听")
+
             self.RunFullSC_listener.stop()
         pass
 
@@ -982,9 +983,8 @@ class Ui:
     def reflashbg(self):
         """刷新背景"""
 
-        fm = open(path_zidingyi_bg, "w")
-        fm.write(str(self.bgpath))
-        fm.close()
+        ToolBoxConfig().set_style_path('bgPath', self.bgpath)
+        
         self.loaded_bg = True
         self.col_imgbg = ft.Image(
             src=f"{self.bgpath}",
@@ -1003,7 +1003,7 @@ class Ui:
         if self.guaqi_runstatus == False:
             self.page.window_visible = False
             self.page.update()
-            status = guaqi_process(getStudentExeName())
+            status = guaqi_process(ToolBoxConfig().studentExeName)
 
             status_ = guaqi_process("MultiClient.exe")
 
@@ -1018,7 +1018,7 @@ class Ui:
                 self.page.update()
                 self.show_snakemessage(status)
         else:
-            status = huifu_process(getStudentExeName())
+            status = huifu_process(ToolBoxConfig().studentExeName)
             status_ = huifu_process("MultiClient.exe")
             if status == True:
                 self.guaqi_runstatus = False
@@ -1079,13 +1079,12 @@ class Ui:
 
     def loadyiyan(self):
         """从外部加载一言库"""
-        fm = open(path_zidingyi_yiyan, "w")
-        fm.write(str(self.yiyanfpath))
-        fm.close()
+        ToolBoxConfig().set_style_path('yiyanPath', self.yiyanfpath)
 
         try:
             fm = open(self.yiyanfpath, "r", encoding="utf-8")
             get = fm.read()
+            fm.close()
 
             list_get = get.split("^")
 
@@ -1101,7 +1100,7 @@ class Ui:
             self.show_snakemessage(f"加载外部一言时出现{e}异常")
         pass
 
-    def change_bg_btmd(self, *e):
+    def change_bg_btmd(self, e):
         """改变背景图片不透明度的信号触发函数"""
         self.bgtmd = e.control.value
         self.reflashbg()
@@ -1119,9 +1118,9 @@ class Ui:
 
     def setup_zidingyi_font(self):
         """设置自定义字体"""
-        fm = open(path_zidingyi_fort, "w")
-        fm.write(str(self.zdy_fontpath))
-
+        
+        ToolBoxConfig().set_style_path('fontPath', self.zdy_fontpath)
+        
         self.font_loadtime += 1
         print("[DEBUG] font_loadtime var = ", self.font_loadtime)
         # 就是不知道为什么这里就直接是2了
