@@ -8,6 +8,8 @@ import ctypes
 import sys
 import psutil
 import pyautogui
+import socket
+import re
 
 # import wmi
 # from mainv3 import Ui
@@ -42,6 +44,14 @@ MMPCServRun = True
 
 os.makedirs(cmdpath,mode=0o777,exist_ok=True)
 os.makedirs(bkppath,mode=0o777,exist_ok=True)
+
+Ui_Class = None
+
+def pass_ui_class(ui:classmethod) -> None:
+    '''传递Ui类到此处让这里的函数可以调用主Ui的函数'''
+    global Ui_Class
+    Ui_Class = ui
+    
 
 
 def TryGetStudentPath() -> tuple[str,str] | tuple[bool,None]:
@@ -173,9 +183,6 @@ def HighVer_AddCloseMMPC_CommandLine():
     return ""
 
 
-
-    
-
 def checkPointFileIsExcs(filePath) -> bool:
     '''检查传入路径的指定文件是否存在\n
     返回True/False'''
@@ -257,10 +264,32 @@ def get_yuancheng_cmd() -> str | None:
 
 # "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe" {#decoderName#:#h264#,#fullscreen#:0,#local#:#172.18.36.132#,#port#:7778,#remote#:#229.1.36.200#,#teacher_ip#:0,#verityPort#:7788}
 
+def get_ipv4_address() -> str | None:
+    '''获取机器IPv4地址'''
+    try:
+        # 获取主机名
+        hostname = socket.gethostname()
+        # 获取主机的IPv4地址
+        ipv4_address = socket.gethostbyname(hostname)
+        return ipv4_address
+    except Exception as e:
+        print(f"获取IPv4地址时出现错误: {e}")
+        return None
+
 def handin_save_yc_cmd(save_cmd) -> None:
-    '''开发者选项 - 手动保存拦截的命令'''
+    '''手动保存拦截的命令'''
     global cmdpath
+    
     getpath = cmdpath + "\\SCCMD.txt"
+
+    localIp = get_ipv4_address()
+    # 替换命令中的IP地址
+    print(f"[DEBUG] ReplaceBefore > {save_cmd}")
+    print(f"[DEBUG] LocalIP > {localIp}")
+    
+    save_cmd = re.sub(r"(#local#:)(#.*?#)", rf"\1#{localIp}#", save_cmd)
+    
+    print(f"[DEBUG] ReplaceTo > {save_cmd}")
 
     fm = open(getpath,"w")
     fm.write(str(save_cmd))
