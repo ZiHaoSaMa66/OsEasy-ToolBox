@@ -26,7 +26,7 @@ class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.7 RC2 Dev"
+        self.ver = "OsEasy-ToolBox v1.7 Beta3.1"
 
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -555,6 +555,11 @@ class Ui:
                     selected_icon_content=ft.Icon(ft.icons.FAVORITE, color="red"),
                     label="关于",
                 ),
+                ft.NavigationRailDestination(
+                    icon=ft.icons.SETTINGS_OUTLINED,
+                    selected_icon_content=ft.Icon(ft.icons.SETTINGS),
+                    label="DevTools",
+                ),
             ],
             on_change=lambda e: self.selPages_Helper(e.control.selected_index),
         )
@@ -913,6 +918,46 @@ class Ui:
             self.page.update()
             self.page.add(nedadd)
             self.page.update()
+
+    def SWC_MainPages_5(self):
+        """切换至页面5"""
+        self.dllname_input = ft.TextField(label="File FullName")
+        # Dll 名称 如: xxx.dll
+        self.dll_func_input = ft.TextField(label="Function Name")
+        # Dll 内的导出函数 如: GetUserNameA
+        self.dll_return_input = ft.TextField(label="Return Type")
+        # 返回值的类型 bool , int , char , long , double
+        
+        self.dll_confirm_btn = ft.FilledTonalButton(
+            text="Confirm",
+            on_click=lambda _: dev_test_use_dll(
+                self.dllname_input.value,
+                self.dll_func_input.value,
+                self.dll_return_input.value,
+                ),
+            icon=ft.icons.CODE,
+        )
+        
+        self.debugTab_Stuff = ft.Column(
+            controls=[
+                ft.Text("在操作前请确保你知道参数应该填什么",size=19,color="red"),
+                self.dllname_input,
+                self.dll_func_input,
+                self.dll_return_input,
+                self.dll_confirm_btn,
+            ]
+        )
+        
+        nedadd = ft.Row(
+                [self.MyRail, ft.VerticalDivider(width=0), self.debugTab_Stuff],
+                height=self.page.window_height,
+                width=self.page.window_width,
+        )
+
+        self.page.clean()
+        self.page.update()
+        self.page.add(nedadd)
+        self.page.update()
 
     def added_pickdialog(self):
         """添加文件选择对话框"""

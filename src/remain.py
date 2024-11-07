@@ -31,6 +31,76 @@ MMPCServRun = True
 os.makedirs(cmdpath, mode=0o777, exist_ok=True)
 os.makedirs(bkppath, mode=0o777, exist_ok=True)
 
+class EasyDll:
+    def __init__(self, dll_path):
+
+        self.dll = ctypes.WinDLL(dll_path)
+
+    def setup_function(self, func_name, restype=ctypes.c_int, argtypes=None):
+        """
+        Configures a DLL function with the specified name, return type, and argument types.
+        
+        :param func_name: Name of the function in the DLL.
+        :param restype: Return type of the function (default is c_int).
+        :param argtypes: List of argument types (default is None).
+        """
+        func = getattr(self.dll, func_name)
+        func.restype = restype
+        func.argtypes = argtypes or []
+        return func
+
+    def get_error_message(self, error_code):
+        """
+        Helper function to retrieve Windows error message for a given error code.
+        
+        :param error_code: Error code to look up.
+        :return: The formatted error message string.
+        """
+        msg_buffer = ctypes.create_unicode_buffer(256)
+        ctypes.windll.kernel32.FormatMessageW(
+            0x00001000,  # FORMAT_MESSAGE_FROM_SYSTEM
+            None,
+            error_code,
+            0,  # Default language
+            msg_buffer,
+            len(msg_buffer),
+            None
+        )
+        return msg_buffer.value
+
+def dev_test_use_dll(dll_name, func_name, return_type):
+
+    # dll_path = "" + dll_name
+    dll_path = ToolBoxCfg.oseasypath + "\\x64\\" + dll_name
+
+    easy_dll = EasyDll(dll_path)
+
+    useType = {
+        'bool': ctypes.c_bool,
+        'int': ctypes.c_int,
+        'long': ctypes.c_long,
+        'double': ctypes.c_double,
+        'char': ctypes.c_char,
+    }
+
+    runner = easy_dll.setup_function(func_name, restype=useType[return_type], argtypes=[])
+    
+    try:
+        result = runner()
+    except Exception as e:
+        Ui_CallShowSnakeMessage(f"调用失败 抛出异常：\n{e}")
+    
+    print("[DEBUG] dll result:", result)
+    
+    ui_show_msg = f"Result：\nName: {func_name}\n返回值: {result}"
+    
+    if result != 0:
+        error_msg = easy_dll.get_error_message(result)
+        print("[DEBUG] Error message:", error_msg)
+        ui_show_msg += f"\n错误信息: {error_msg}"
+        
+    Ui_CallShowSnakeMessage(ui_show_msg)
+
 
 class ToolBoxConfig:
 
@@ -131,14 +201,18 @@ def pass_ui_class(ui: classmethod) -> None:
     Ui_Class = ui
 
 
-def Ui_CallShowSnakeMessage(msg: str) -> None:
+def Ui_CallShowSnakeMessage(*msg:tuple) -> None:
     """Ui类 显示底部弹窗"""
+    mix = ""
+    for i in msg:
+        mix += str(i) + " "
+    msg = mix.strip()
     Ui_Class.show_snakemessage(msg)
 
 
 def TryGetStudentPath() -> tuple[str, str] | tuple[bool, None]:
     """尝试获取学生端路径 并更新全局变量"""
-    # global oseasypath,oseasypath_have_been_modified,studentExeName
+    
     Spath = get_program_path("Student.exe")
     Spath_2 = get_program_path("MmcStudent.exe")
     # v10.9.1 学生端改名为MmcStudent.exe
