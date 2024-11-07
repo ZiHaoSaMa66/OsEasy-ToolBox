@@ -69,6 +69,7 @@ class Ui:
     def FullSC_on_press(self, key):
         """用于快捷键运行全屏控制窗口"""
         # print("FullSC Press",key)
+        '''
         if key == keyboard.KeyCode(char="F") or key == keyboard.KeyCode(char="f"):
             self.FullSC_Press_F = True
         if (
@@ -83,10 +84,11 @@ class Ui:
             or key == keyboard.Key.ctrl_r
         ):
             self.FullSC_Press_Ctrl = True
-
-        if self.FullSC_Press_Alt and self.FullSC_Press_F and self.FullSC_Press_Ctrl:
-            self.FullSC_Press_Ctrl = self.FullSC_Press_Alt = self.FullSC_Press_F = False
+        '''
+        #if self.FullSC_Press_Alt and self.FullSC_Press_F and self.FullSC_Press_Ctrl:
+            #self.FullSC_Press_Ctrl = self.FullSC_Press_Alt = self.FullSC_Press_F = False
             # 重置按键状态
+        if str(key) == "<70>":
             if self.KillSCR_swc.value == False:
                 self.show_snakemessage(
                     "警告！ 未开启快捷键杀广播进程\n尝试运行的操作已拦截...."
