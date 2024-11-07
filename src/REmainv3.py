@@ -3,7 +3,7 @@ from remain import *
 run_upto_admin()
 
 
-fstst = check_firsttime_start()
+fstst = ToolBoxCfg.first_launch_check()
 if fstst == True:
     usecmd_runcmd(
         'rename "C:\\Program Files\\Autodesk\\Autodesk Sync\\AdSyncNamespace.dll" "AdSyncNamespace.dll.bak"'
@@ -46,10 +46,6 @@ class Ui:
         self.Press_X = False
         self.Press_Alt = False
 
-        self.FullSC_Press_F = False
-        self.FullSC_Press_Alt = False
-        self.FullSC_Press_Ctrl = False
-
         self.guaqi_runstatus = False  # 挂起进程状态
         self.bgtmd = 0.6  # 初始化 背景图片透明度值
         self.defult_yy = True  # 默认一言库
@@ -62,32 +58,11 @@ class Ui:
 
         self.loaded_bg = False
 
-        
-
         pass
 
     def FullSC_on_press(self, key):
         """用于快捷键运行全屏控制窗口"""
-        # print("FullSC Press",key)
-        '''
-        if key == keyboard.KeyCode(char="F") or key == keyboard.KeyCode(char="f"):
-            self.FullSC_Press_F = True
-        if (
-            key == keyboard.Key.alt
-            or key == keyboard.Key.alt_l
-            or key == keyboard.Key.alt_r
-        ):
-            self.FullSC_Press_Alt = True
-        if (
-            key == keyboard.Key.ctrl
-            or key == keyboard.Key.ctrl_l
-            or key == keyboard.Key.ctrl_r
-        ):
-            self.FullSC_Press_Ctrl = True
-        '''
-        #if self.FullSC_Press_Alt and self.FullSC_Press_F and self.FullSC_Press_Ctrl:
-            #self.FullSC_Press_Ctrl = self.FullSC_Press_Alt = self.FullSC_Press_F = False
-            # 重置按键状态
+
         if str(key) == "<70>":
             if self.KillSCR_swc.value == False:
                 self.show_snakemessage(
@@ -100,8 +75,6 @@ class Ui:
                 else:
                     cmd = status.replace("#fullscreen#:0", "#fullscreen#:1")
                     builded = build_run_srcmd(cmd)
-                    # Fix 潜在的失败问题
-                    # print("DEBUG with build cmd",builded)
                     runcmd(builded)
                     # Fix 黑框
 
@@ -149,10 +122,6 @@ class Ui:
 
     def JT_on_press(self, key):
         """当监听器检测到键盘按下"""
-        # try:
-        #     # print('字母键： {} 被按下'.format(key.char))
-        # except AttributeError:
-        #     # print('特殊键： {} 被按下'.format(key))
 
         if key == keyboard.KeyCode(char="x") or key == keyboard.KeyCode(char="X"):
             self.Press_X = True
@@ -168,8 +137,6 @@ class Ui:
             get_scshot()
 
         pass
-        # if key == keyboard.KeyCode(char="x") and key == keyboard.Key.alt_l:
-        #     get_scshot()
 
     def run_windowskjj_onpress(self, key):
         """快捷键触发运行窗口广播"""
@@ -201,61 +168,25 @@ class Ui:
         )
         self.page.update()
 
-
     def try_get_history_path(self):
         """尝试获取历史路径"""
         if fstst != True:
-            bgPath = ToolBoxConfig().get_style_path('bgPath')
+            bgPath = ToolBoxCfg.get_style_path("bgPath")
             if bgPath:
                 self.bgpath = bgPath
                 self.bgtmdb.disabled = False
                 self.loaded_bg = True
                 self.reflashbg()
-                
-            yiyanPath = ToolBoxConfig().get_style_path('yiyanPath')
+
+            yiyanPath = ToolBoxCfg.get_style_path("yiyanPath")
             if yiyanPath:
                 self.yiyanfpath = yiyanPath
                 self.loadyiyan()
-            
-            fontPath = ToolBoxConfig().get_style_path('fontPath')
+
+            fontPath = ToolBoxCfg.get_style_path("fontPath")
             if fontPath:
                 self.zdy_fontpath = fontPath
                 self.setup_zidingyi_font()
-                
-                
-            
-            # try:
-            #     fm = open(path_zidingyi_bg, "r")
-            #     self.bgpath = fm.read()
-            #     fm.close()
-            #     # print("[SUCC] 成功加载历史背景")
-            #     self.bgtmdb.disabled = False
-            #     self.loaded_bg = True
-            #     self.reflashbg()
-            # except FileNotFoundError:
-            #     # print("[DEBUG] 未找到历史背景路径")
-            #     self.loaded_bg = False
-            #     pass
-            # try:
-            #     fm = open(path_zidingyi_yiyan, "r")
-            #     self.yiyanfpath = fm.read()
-            #     fm.close()
-            #     # print("[SUCC] 成功加载历史一言")
-            #     self.loadyiyan()
-            # except FileNotFoundError:
-            #     # print("[DEBUG] 未找到历史一言路径")
-
-            #     pass
-
-            # try:
-            #     fm = open(path_zidingyi_fort, "r")
-            #     self.zdy_fontpath = fm.read()
-            #     fm.close()
-            #     # print("[SUCC] 成功加载历史字体")
-            #     self.setup_zidingyi_font()
-            # except FileNotFoundError:
-            #     # print("[DEBUG] 未找到历史自定义字体路径")
-            #     pass
 
     def enable_usb(self):
         pass
@@ -303,7 +234,6 @@ class Ui:
         self.page.window_min_width = 449
 
         self.page.update()
-
 
         self.unlock_func_askdlg = ft.AlertDialog(
             modal=True,
@@ -506,14 +436,22 @@ class Ui:
             ]
         )
 
-        self.conl_dev_saveinput = ft.TextField(label="键入远程广播命令")
-        self.conl_dev_update = ft.FilledTonalButton(
-            "手动更新远程广播命令",
-            on_click=lambda _: handin_save_yc_cmd(self.conl_dev_saveinput.value),
+        self.teachIp_input = ft.TextField(label="输入教师端IP地址")
+        # 自动生成命令
+        self.auto_gennerate_cmd = ft.FilledTonalButton(
+            text="自动生成远程命令",
+            icon=ft.icons.CODE,
+            on_click=lambda _: generate_yc_cmd_and_save(self.teachIp_input.value),
+        )
+
+        self.conl_save_ycCmd_input = ft.TextField(label="键入完整的远程广播命令")
+        self.conl_ycCmd_update = ft.FilledTonalButton(
+            "手动更新完整远程广播命令",
+            on_click=lambda _: handin_save_yc_cmd(self.conl_save_ycCmd_input.value),
             icon=ft.icons.UPDATE,
         )
 
-        self.conl_dev_getyccmd_btn = ft.FilledTonalButton(
+        self.conl_getyccmd_btn = ft.FilledTonalButton(
             text="读取已拦截的广播命令",
             icon=ft.icons.BOOK,
             on_click=self.dev_read_lj_cmd_loj,
@@ -632,7 +570,7 @@ class Ui:
         self.try_get_history_path()
 
         self.reflashStudentPath()
-        
+
         pass_ui_class(self)
 
     def reflashStudentPath(self, *e):
@@ -644,11 +582,10 @@ class Ui:
         # status, studentName = TryGetStudentPath()
         _ = tryGuessStudentClientVer()
         # 没啥用只是顺带需要更新一下学生端版本
-        
 
-        if ToolBoxConfig().oseasypath_have_been_modified != False:
+        if ToolBoxCfg.oseasypath_have_been_modified != False:
             self.show_snakemessage(
-                f"更新学生端路径成功\n{ToolBoxConfig().oseasypath}\n学生端进程名:{ToolBoxConfig().studentExeName}"
+                f"更新学生端路径成功\n{ToolBoxCfg.oseasypath}\n学生端进程名:{ToolBoxCfg.studentExeName}"
             )
         else:
             self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
@@ -939,13 +876,14 @@ class Ui:
         self.AboutTab_Stuff = ft.Column(
             controls=[
                 ft.Text("此工具箱在Github上发布", size=22),
-                ft.Text("由笨比ZiHao一人独自开发", size=22, bgcolor="cyan"),
                 ft.Text("愿我们的电脑课都不再无聊~🥳", size=22),
                 ft.ElevatedButton("点我打开工具箱Github页", on_click=opengithubres),
                 ft.VerticalDivider(width=2),
-                self.conl_dev_saveinput,
-                self.conl_dev_update,
-                self.conl_dev_getyccmd_btn,
+                self.conl_save_ycCmd_input,
+                self.conl_ycCmd_update,
+                self.teachIp_input,
+                self.auto_gennerate_cmd,
+                self.conl_getyccmd_btn,
             ]
         )
 
@@ -985,8 +923,8 @@ class Ui:
     def reflashbg(self):
         """刷新背景"""
 
-        ToolBoxConfig().set_style_path('bgPath', self.bgpath)
-        
+        ToolBoxCfg.set_style_path("bgPath", self.bgpath)
+
         self.loaded_bg = True
         self.col_imgbg = ft.Image(
             src=f"{self.bgpath}",
@@ -1005,7 +943,7 @@ class Ui:
         if self.guaqi_runstatus == False:
             self.page.window_visible = False
             self.page.update()
-            status = guaqi_process(ToolBoxConfig().studentExeName)
+            status = guaqi_process(ToolBoxCfg.studentExeName)
 
             status_ = guaqi_process("MultiClient.exe")
 
@@ -1020,7 +958,7 @@ class Ui:
                 self.page.update()
                 self.show_snakemessage(status)
         else:
-            status = huifu_process(ToolBoxConfig().studentExeName)
+            status = huifu_process(ToolBoxCfg.studentExeName)
             status_ = huifu_process("MultiClient.exe")
             if status == True:
                 self.guaqi_runstatus = False
@@ -1081,7 +1019,7 @@ class Ui:
 
     def loadyiyan(self):
         """从外部加载一言库"""
-        ToolBoxConfig().set_style_path('yiyanPath', self.yiyanfpath)
+        ToolBoxCfg.set_style_path("yiyanPath", self.yiyanfpath)
 
         try:
             fm = open(self.yiyanfpath, "r", encoding="utf-8")
@@ -1120,9 +1058,9 @@ class Ui:
 
     def setup_zidingyi_font(self):
         """设置自定义字体"""
-        
-        ToolBoxConfig().set_style_path('fontPath', self.zdy_fontpath)
-        
+
+        ToolBoxCfg.set_style_path("fontPath", self.zdy_fontpath)
+
         self.font_loadtime += 1
         print("[DEBUG] font_loadtime var = ", self.font_loadtime)
         # 就是不知道为什么这里就直接是2了
