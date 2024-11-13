@@ -26,7 +26,7 @@ class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.7 Beta3.1"
+        self.ver = "OsEasy-ToolBox v1.7 Beta3.2"
 
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -919,6 +919,13 @@ class Ui:
             self.page.add(nedadd)
             self.page.update()
 
+    def dll_test_case_fill_helper(self, filename, funcname, returntype):
+        """自动填充测试用例的辅助函数"""
+        self.dllname_input.value = filename
+        self.dll_func_input.value = funcname
+        self.dll_return_input.value = returntype
+        self.page.update()
+
     def SWC_MainPages_5(self):
         """切换至页面5"""
         self.dllname_input = ft.TextField(label="File FullName")
@@ -927,31 +934,85 @@ class Ui:
         # Dll 内的导出函数 如: GetUserNameA
         self.dll_return_input = ft.TextField(label="Return Type")
         # 返回值的类型 bool , int , char , long , double
-        
+
         self.dll_confirm_btn = ft.FilledTonalButton(
             text="Confirm",
             on_click=lambda _: dev_test_use_dll(
                 self.dllname_input.value,
                 self.dll_func_input.value,
                 self.dll_return_input.value,
-                ),
+            ),
+            icon=ft.icons.CODE,
+        )
+
+        self.dll_test_case_1 = ft.FilledTonalButton(
+            text="测试用例 1",
+            on_click=lambda _: self.dll_test_case_fill_helper(
+                "easyusbctrl.dll",
+                "EasyUsb_StopWorking",
+                "int",
+            ),
             icon=ft.icons.CODE,
         )
         
+        self.dll_test_case_2 = ft.FilledTonalButton(
+            text="测试用例 2",
+            on_click=lambda _: self.dll_test_case_fill_helper(
+                "easyusbctrl.dll",
+                "EasyUsb_StartWorking",
+                "int",
+            ),
+            icon=ft.icons.CODE,
+        )
+        
+        self.dll_test_case_3 = ft.FilledTonalButton(
+            text="测试用例 3",
+            on_click=lambda _: self.dll_test_case_fill_helper(
+                "OeNetlimit.dll",
+                "DisableInternet",
+                "int",
+            ),
+            icon=ft.icons.CODE,
+        )
+
+        self.dll_test_case_4 = ft.FilledTonalButton(
+            text="测试用例 4",
+            on_click=lambda _: self.dll_test_case_fill_helper(
+                "OeNetlimit.dll",
+                "EnableNet",
+                "int",
+            ),
+            icon=ft.icons.CODE,
+        )
+
         self.debugTab_Stuff = ft.Column(
             controls=[
-                ft.Text("在操作前请确保你知道参数应该填什么",size=19,color="red"),
+                ft.Text("在操作前请确保你知道参数应该填什么", size=19, color="red"),
                 self.dllname_input,
                 self.dll_func_input,
                 self.dll_return_input,
+                ft.Row(
+                    [
+                        self.dll_test_case_1,
+                        self.dll_test_case_2,                        
+                    ]
+                ),
+                
+                ft.Row(
+                    [
+                        self.dll_test_case_3,
+                        self.dll_test_case_4,                        
+                    ]
+                ),
+                
                 self.dll_confirm_btn,
             ]
         )
-        
+
         nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=0), self.debugTab_Stuff],
-                height=self.page.window_height,
-                width=self.page.window_width,
+            [self.MyRail, ft.VerticalDivider(width=0), self.debugTab_Stuff],
+            height=self.page.window_height,
+            width=self.page.window_width,
         )
 
         self.page.clean()
