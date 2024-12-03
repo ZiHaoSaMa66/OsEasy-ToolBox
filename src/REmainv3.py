@@ -26,7 +26,7 @@ class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.7 Beta3.2"
+        self.ver = "OsEasy-ToolBox v1.7 RC2"
 
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -445,9 +445,15 @@ class Ui:
         )
 
         self.conl_save_ycCmd_input = ft.TextField(label="键入完整的远程广播命令")
+        self.conl_ycCmd_update_with_replace_ip = ft.FilledTonalButton(
+            "自动替换本地IP并更新命令",
+            on_click=lambda _: handin_save_yc_cmd(self.conl_save_ycCmd_input.value,True),
+            icon=ft.icons.UPDATE,
+        )
+        
         self.conl_ycCmd_update = ft.FilledTonalButton(
             "手动更新完整远程广播命令",
-            on_click=lambda _: handin_save_yc_cmd(self.conl_save_ycCmd_input.value),
+            on_click=lambda _: handin_save_yc_cmd(self.conl_save_ycCmd_input.value,False),
             icon=ft.icons.UPDATE,
         )
 
@@ -558,7 +564,7 @@ class Ui:
                 ft.NavigationRailDestination(
                     icon=ft.icons.SETTINGS_OUTLINED,
                     selected_icon_content=ft.Icon(ft.icons.SETTINGS),
-                    label="DevTools",
+                    label="调试工具",
                 ),
             ],
             on_change=lambda e: self.selPages_Helper(e.control.selected_index),
@@ -886,6 +892,7 @@ class Ui:
                 ft.VerticalDivider(width=2),
                 self.conl_save_ycCmd_input,
                 self.conl_ycCmd_update,
+                self.conl_ycCmd_update_with_replace_ip,
                 self.teachIp_input,
                 self.auto_gennerate_cmd,
                 self.conl_getyccmd_btn,
@@ -919,7 +926,7 @@ class Ui:
             self.page.add(nedadd)
             self.page.update()
 
-    def dll_test_case_fill_helper(self, filename, funcname, returntype):
+    def dll_test_case_fill_helper(self, filename:str, funcname:str, returntype:str) -> None:
         """自动填充测试用例的辅助函数"""
         self.dllname_input.value = filename
         self.dll_func_input.value = funcname
@@ -928,15 +935,15 @@ class Ui:
 
     def SWC_MainPages_5(self):
         """切换至页面5"""
-        self.dllname_input = ft.TextField(label="File FullName")
+        self.dllname_input = ft.TextField(label="完整文件名")
         # Dll 名称 如: xxx.dll
-        self.dll_func_input = ft.TextField(label="Function Name")
+        self.dll_func_input = ft.TextField(label="调用的函数名")
         # Dll 内的导出函数 如: GetUserNameA
-        self.dll_return_input = ft.TextField(label="Return Type")
+        self.dll_return_input = ft.TextField(label="返回值的类型")
         # 返回值的类型 bool , int , char , long , double
 
         self.dll_confirm_btn = ft.FilledTonalButton(
-            text="Confirm",
+            text="执行",
             on_click=lambda _: dev_test_use_dll(
                 self.dllname_input.value,
                 self.dll_func_input.value,
@@ -945,65 +952,63 @@ class Ui:
             icon=ft.icons.CODE,
         )
 
-        self.dll_test_case_1 = ft.FilledTonalButton(
-            text="测试用例 1",
-            on_click=lambda _: self.dll_test_case_fill_helper(
-                "easyusbctrl.dll",
-                "EasyUsb_StopWorking",
-                "int",
-            ),
-            icon=ft.icons.CODE,
-        )
+        # self.dll_test_case_1 = ft.FilledTonalButton(
+        #     text="测试用例 1",
+        #     on_click=lambda _: self.dll_test_case_fill_helper(
+        #         "easyusbctrl.dll",
+        #         "EasyUsb_StopWorking",
+        #         "int",
+        #     ),
+        #     icon=ft.icons.CODE,
+        # )
         
-        self.dll_test_case_2 = ft.FilledTonalButton(
-            text="测试用例 2",
-            on_click=lambda _: self.dll_test_case_fill_helper(
-                "easyusbctrl.dll",
-                "EasyUsb_StartWorking",
-                "int",
-            ),
-            icon=ft.icons.CODE,
-        )
+        # self.dll_test_case_2 = ft.FilledTonalButton(
+        #     text="测试用例 2",
+        #     on_click=lambda _: self.dll_test_case_fill_helper(
+        #         "easyusbctrl.dll",
+        #         "EasyUsb_StartWorking",
+        #         "int",
+        #     ),
+        #     icon=ft.icons.CODE,
+        # )
         
         self.dll_test_case_3 = ft.FilledTonalButton(
-            text="测试用例 3",
+            text="自动填入:关闭网络",
             on_click=lambda _: self.dll_test_case_fill_helper(
                 "OeNetlimit.dll",
                 "DisableInternet",
                 "int",
             ),
-            icon=ft.icons.CODE,
+            icon=ft.icons.PENDING_OUTLINED,
         )
 
         self.dll_test_case_4 = ft.FilledTonalButton(
-            text="测试用例 4",
+            text="自动填入:启用网络",
             on_click=lambda _: self.dll_test_case_fill_helper(
                 "OeNetlimit.dll",
                 "EnableNet",
                 "int",
             ),
-            icon=ft.icons.CODE,
+            icon=ft.icons.PENDING_OUTLINED,
         )
 
         self.debugTab_Stuff = ft.Column(
             controls=[
-                ft.Text("在操作前请确保你知道参数应该填什么", size=19, color="red"),
+                # ft.Text("在操作前请确保你知道参数应该填什么", size=19, color="red"),
                 self.dllname_input,
                 self.dll_func_input,
                 self.dll_return_input,
-                ft.Row(
-                    [
-                        self.dll_test_case_1,
-                        self.dll_test_case_2,                        
-                    ]
-                ),
+                # ft.Row(
+                #     [
+                #         self.dll_test_case_1,
+                #         self.dll_test_case_2,                        
+                #     ]
+                # ),
                 
-                ft.Row(
-                    [
-                        self.dll_test_case_3,
-                        self.dll_test_case_4,                        
-                    ]
-                ),
+
+                self.dll_test_case_3,
+                self.dll_test_case_4,                        
+
                 
                 self.dll_confirm_btn,
             ]

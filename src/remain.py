@@ -418,14 +418,18 @@ def get_ipv4_address() -> str | None:
         return None
 
 
-def handin_save_yc_cmd(save_cmd) -> None:
+def handin_save_yc_cmd(save_cmd,replace_ip = True) -> None:
     """手动保存拦截的命令"""
     global cmdpath
-    localIp = get_ipv4_address()
+    
+    if replace_ip:
+    
+        localIp = get_ipv4_address()
 
-    Ui_CallShowSnakeMessage(f"已自动替换本地IP地址为{localIp}")
+        Ui_CallShowSnakeMessage(f"已自动替换本地IP地址为{localIp}")
 
-    save_cmd = re.sub(r"(#local#:)(#.*?#)", rf"\1#{localIp}#", save_cmd)
+        save_cmd = re.sub(r"(#local#:)(#.*?#)", rf"\1#{localIp}#", save_cmd)
+    
     getpath = os.path.join(cmdpath, "SCCMD.txt")
 
     with open(getpath, "w") as f:
@@ -724,6 +728,7 @@ def backupOeKeyDll() -> None:
         "MultiClient.exe",
         "LoadDriver.exe",
         "BlackSlient.exe",
+        "\\x86\\LISSNetInfoSniffer.exe"
     ]
     for filename in namelist:
 
@@ -764,6 +769,7 @@ def restoneKeyDll() -> None:
         "MultiClient.exe",
         "LoadDriver.exe",
         "BlackSlient.exe",
+        "\\x86\\LISSNetInfoSniffer.exe"
     ]
     for filename in namelist:
         oepath = ToolBoxCfg.oseasypath + filename
@@ -787,7 +793,7 @@ def summon_deldll(delMtc: bool, shutdown: bool) -> None:
 
     mp = cmdpath + "\\d.bat"
     fm = open(mp, "w")
-    cmdtext = f"@ECHO OFF\ntitle OsEasyToolBox-Helper\ncd /D {ToolBoxCfg.oseasypath}\ntimeout 1\ndel /F /S OeNetLimitSetup.exe\ndel /F /S OeNetLimit.sys\ndel /F /S OeNetLimit.inf\ndel /F /S LockKeyboard.dll\ndel /F /S LoadDriver.exe\ndel /F /S LoadDriver.exe\ndel /F /S oenetlimitx64.cat\ndel /F /S BlackSlient.exe"
+    cmdtext = f"@ECHO OFF\ntitle OsEasyToolBox-Helper\ncd /D {ToolBoxCfg.oseasypath}\ntimeout 1\ndel /F /S OeNetLimitSetup.exe\ndel /F /S OeNetLimit.sys\ndel /F /S OeNetLimit.inf\ndel /F /S LockKeyboard.dll\ndel /F /S LoadDriver.exe\ndel /F /S LoadDriver.exe\ndel /F /S oenetlimitx64.cat\ndel /F /S BlackSlient.exe\ncd x86\ndel /F /S LISSNetInfoSniffer.exe\ncd .."
     if delMtc == True:
         cmdtext += "\ndel /F /S MultiClient.exe"
     if shutdown == False:
