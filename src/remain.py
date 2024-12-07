@@ -349,18 +349,6 @@ def HighVer_AddCloseMMPC_CommandLine():
         return "sc stop MMPC\n"
     return ""
 
-def HighVer_AddCloseMMPC_CommandLine():
-    """检查学生端版本来决定\n
-    需不需要向脚本追加关闭MMPC保护服务的命令\n
-    """
-
-    if not ToolBoxCfg.running_student_client_ver:
-        _ = tryGuessStudentClientVer()
-
-    if ToolBoxCfg.running_student_client_ver >= 109:
-        return "sc stop MMPC\n"
-    return ""
-
 def HighVer_AddStartMMPC_CommandLine():
     """检查学生端版本来决定\n
     需不需要向脚本追加关闭MMPC保护服务的命令\n
