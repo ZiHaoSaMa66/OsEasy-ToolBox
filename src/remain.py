@@ -349,6 +349,29 @@ def HighVer_AddCloseMMPC_CommandLine():
         return "sc stop MMPC\n"
     return ""
 
+def HighVer_AddCloseMMPC_CommandLine():
+    """检查学生端版本来决定\n
+    需不需要向脚本追加关闭MMPC保护服务的命令\n
+    """
+
+    if not ToolBoxCfg.running_student_client_ver:
+        _ = tryGuessStudentClientVer()
+
+    if ToolBoxCfg.running_student_client_ver >= 109:
+        return "sc stop MMPC\n"
+    return ""
+
+def HighVer_AddStartMMPC_CommandLine():
+    """检查学生端版本来决定\n
+    需不需要向脚本追加关闭MMPC保护服务的命令\n
+    """
+
+    if not ToolBoxCfg.running_student_client_ver:
+        _ = tryGuessStudentClientVer()
+
+    if ToolBoxCfg.running_student_client_ver >= 109:
+        return "sc start MMPC\n"
+    return ""
 
 def checkPointFileIsExcs(filePath) -> bool:
     """检查文件是否存在"""
@@ -664,6 +687,22 @@ def summon_unlocknet() -> None:
     fm.write(cmdtext)
     fm.close()
 
+def summon_locknet() -> None:
+    """生成网络锁定脚本"""
+    global cmdpath
+    mp = cmdpath + "\\net.bat"
+    fm = open(mp, "w")
+    cmdtext = f"""@ECHO OFF\n
+    title OsEasyToolBoxUnlockNetHeler\n
+    {HighVer_AddStartMMPC_CommandLine()}
+    :a\n
+    start {ToolBoxCfg.oseasypath}\\{ToolBoxCfg.studentExeName}\n
+    start {ToolBoxCfg.oseasypath}\\\DeviceControl_x64.exe\n
+    goto a
+    """
+    fm.write(cmdtext)
+    fm.close()
+
 
 def summon_unlock_usb() -> None:
     """生成解锁USB脚本"""
@@ -921,6 +960,16 @@ def unlockedNet() -> None:
     )
     time.sleep(1)
 
+def lockedNet() -> None:
+    summon_locknet()
+    runbat("net.bat")
+    time.sleep(2)
+    runcmd("sc start OeNetlimit")
+    time.sleep(1)
+    usecmd_runcmd(
+        'taskkill /f /t /fi "imagename eq cmd.exe" /fi "windowtitle eq 管理员:  OsEasyToolBoxlockNetHeler"'
+    )
+    time.sleep(1)
 
 def startOsEasySelfToolBox(*e) -> None:
     # print("执行功能8 请稍等...")
