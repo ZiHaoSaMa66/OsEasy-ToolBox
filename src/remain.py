@@ -31,6 +31,7 @@ MMPCServRun = True
 os.makedirs(cmdpath, mode=0o777, exist_ok=True)
 os.makedirs(bkppath, mode=0o777, exist_ok=True)
 
+
 class EasyDll:
     def __init__(self, dll_path):
 
@@ -39,7 +40,7 @@ class EasyDll:
     def setup_function(self, func_name, restype=ctypes.c_int, argtypes=None):
         """
         Configures a DLL function with the specified name, return type, and argument types.
-        
+
         :param func_name: Name of the function in the DLL.
         :param restype: Return type of the function (default is c_int).
         :param argtypes: List of argument types (default is None).
@@ -52,7 +53,7 @@ class EasyDll:
     def get_error_message(self, error_code):
         """
         Helper function to retrieve Windows error message for a given error code.
-        
+
         :param error_code: Error code to look up.
         :return: The formatted error message string.
         """
@@ -64,41 +65,44 @@ class EasyDll:
             0,  # Default language
             msg_buffer,
             len(msg_buffer),
-            None
+            None,
         )
         return msg_buffer.value
+
 
 def dev_test_use_dll(dll_name, func_name, return_type):
 
     # dll_path = "" + dll_name
-    dll_path = ToolBoxCfg.oseasypath + "\\x64\\" + dll_name
+    dll_path = ToolBoxCfg.oseasypath + dll_name
 
     easy_dll = EasyDll(dll_path)
 
     useType = {
-        'bool': ctypes.c_bool,
-        'int': ctypes.c_int,
-        'long': ctypes.c_long,
-        'double': ctypes.c_double,
-        'char': ctypes.c_char,
+        "bool": ctypes.c_bool,
+        "int": ctypes.c_int,
+        "long": ctypes.c_long,
+        "double": ctypes.c_double,
+        "char": ctypes.c_char,
     }
 
-    runner = easy_dll.setup_function(func_name, restype=useType[return_type], argtypes=[])
-    
+    runner = easy_dll.setup_function(
+        func_name, restype=useType[return_type], argtypes=[]
+    )
+
     try:
         result = runner()
     except Exception as e:
         Ui_CallShowSnakeMessage(f"调用失败 抛出异常：\n{e}")
-    
+
     print("[DEBUG] dll result:", result)
-    
+
     ui_show_msg = f"Result：\nName: {func_name}\n返回值: {result}"
-    
+
     if result != 0:
         error_msg = easy_dll.get_error_message(result)
         print("[DEBUG] Error message:", error_msg)
         ui_show_msg += f"\n错误信息: {error_msg}"
-        
+
     Ui_CallShowSnakeMessage(ui_show_msg)
 
 
@@ -201,7 +205,7 @@ def pass_ui_class(ui: classmethod) -> None:
     Ui_Class = ui
 
 
-def Ui_CallShowSnakeMessage(*msg:tuple) -> None:
+def Ui_CallShowSnakeMessage(*msg: tuple) -> None:
     """Ui类 显示底部弹窗"""
     mix = ""
     for i in msg:
@@ -212,7 +216,7 @@ def Ui_CallShowSnakeMessage(*msg:tuple) -> None:
 
 def TryGetStudentPath() -> tuple[str, str] | tuple[bool, None]:
     """尝试获取学生端路径 并更新全局变量"""
-    
+
     Spath = get_program_path("Student.exe")
     Spath_2 = get_program_path("MmcStudent.exe")
     # v10.9.1 学生端改名为MmcStudent.exe
@@ -321,7 +325,7 @@ def tryGuessStudentClientVer() -> int:
     pass
 
 
-def HighVer_CloseMMPCProtectHelper():
+def HighVer_CloseMMPCProtect_Helper():
     """检查学生端版本来决定\n
     需不需要关闭MMPC保护服务\n
     """
@@ -337,29 +341,21 @@ def HighVer_CloseMMPCProtectHelper():
     pass
 
 
-def HighVer_AddCloseMMPC_CommandLine():
-    """检查学生端版本来决定\n
-    需不需要向脚本追加关闭MMPC保护服务的命令\n
+def HighVer_AddMMPC_Control_CommandLine(IsStop=True):
+    """检查学生端版本 返回根服务控制指令\n
+    用于直接插入到脚本中
     """
 
     if not ToolBoxCfg.running_student_client_ver:
         _ = tryGuessStudentClientVer()
 
     if ToolBoxCfg.running_student_client_ver >= 109:
-        return "sc stop MMPC\n"
+        if IsStop:
+            return "sc stop MMPC\n"
+        else:
+            return "sc start MMPC\n"
     return ""
 
-def HighVer_AddStartMMPC_CommandLine():
-    """检查学生端版本来决定\n
-    需不需要向脚本追加关闭MMPC保护服务的命令\n
-    """
-
-    if not ToolBoxCfg.running_student_client_ver:
-        _ = tryGuessStudentClientVer()
-
-    if ToolBoxCfg.running_student_client_ver >= 109:
-        return "sc start MMPC\n"
-    return ""
 
 def checkPointFileIsExcs(filePath) -> bool:
     """检查文件是否存在"""
@@ -416,8 +412,80 @@ def get_yuancheng_cmd() -> str | None:
     except FileNotFoundError:
         return None
 
+def parse_screenrender_log():
+    """
+    读取 `%appdata%/Mmc/ScreenRender.log` 文件，\n
+    筛选符合特定格式的日志，\n
+    并返回替换 " 为 # 的日志命令部分。\n
+
+    `Returns`
+        `list`: 包含处理后的命令部分的列表。
+    """
+    # 获取 %appdata% 路径
+    appdata_path = os.getenv('APPDATA')
+    if not appdata_path:
+        # raise EnvironmentError("无法获取 %APPDATA% 路径")
+        Ui_CallShowSnakeMessage("无法获取 %APPDATA% 路径")
+        return False, []
+
+    log_path = os.path.join(appdata_path, 'Mmc', 'ScreenRender.log')
+    if not os.path.exists(log_path):
+        # raise FileNotFoundError(f"日志文件不存在: {log_path}")
+        Ui_CallShowSnakeMessage(f"日志文件不存在: {log_path}")
+        return False, []
+
+    # 匹配特定格式的正则表达式
+    pattern = re.compile(r'\d{2}-\d{2} \d{2}:\d{2}:\d{2} (\{.*\})')
+
+    result = []
+
+    try:
+        with open(log_path, 'r', encoding='gbk') as log_file:
+            for line in log_file:
+                match = pattern.search(line)
+                if match:
+                    command = match.group(1)
+                    # 替换 " 为 #
+                    processed_command = command.replace('"', '#')
+                    result.append(processed_command)
+    except Exception as e:
+        # raise RuntimeError(f"读取日志文件时发生错误: {e}")
+        Ui_CallShowSnakeMessage(f"读取日志文件时发生错误: {e}")
+        return False, []
+
+    if len(result) == 0:
+        return False, []
+
+    return True, result
 
 # "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe" {#decoderName#:#h264#,#fullscreen#:0,#local#:#172.18.36.132#,#port#:7778,#remote#:#229.1.36.200#,#teacher_ip#:0,#verityPort#:7788}
+
+def save_scr_log_cmd_to_file(log_list = None) -> None:
+    """传入`parse_screenrender_log`函数返回的命令列表\n
+    或直接调用\n
+    保存广播命令日志中的命令到文件"""
+    
+    if log_list == []:
+        return
+    elif log_list == None:
+        return save_scr_log_cmd_to_file(parse_screenrender_log())
+
+    path = os.getcwd() + "\\" + "scr_log_cmd.txt"
+    with open(path, "w") as f:
+        f.write("\n".join(log_list))
+
+
+def from_scr_log_cmd_get_yccmd() -> None:
+    """从屏幕广播日志中提取广播命令\n并保存到文件"""
+    
+    status, log_list = parse_screenrender_log()
+    if not status:
+        return
+    
+    save_scr_log_cmd_to_file(log_list)
+    
+    handin_save_yc_cmd(log_list[0])
+    
 
 
 def get_ipv4_address() -> str | None:
@@ -429,18 +497,18 @@ def get_ipv4_address() -> str | None:
         return None
 
 
-def handin_save_yc_cmd(save_cmd,replace_ip = True) -> None:
+def handin_save_yc_cmd(save_cmd, replace_ip=True) -> None:
     """手动保存拦截的命令"""
     global cmdpath
-    
+
     if replace_ip:
-    
+
         localIp = get_ipv4_address()
 
         Ui_CallShowSnakeMessage(f"已自动替换本地IP地址为{localIp}")
 
         save_cmd = re.sub(r"(#local#:)(#.*?#)", rf"\1#{localIp}#", save_cmd)
-    
+
     getpath = os.path.join(cmdpath, "SCCMD.txt")
 
     with open(getpath, "w") as f:
@@ -666,26 +734,10 @@ def summon_unlocknet() -> None:
     fm = open(mp, "w")
     cmdtext = f"""@ECHO OFF\n
     title OsEasyToolBoxUnlockNetHeler\n
-    {HighVer_AddCloseMMPC_CommandLine()}
+    {HighVer_AddMMPC_Control_CommandLine(isStop=True)}
     :a\n
     taskkill /f /t /im {ToolBoxCfg.studentExeName}\n
     taskkill /f /t /im DeviceControl_x64.exe\n
-    goto a
-    """
-    fm.write(cmdtext)
-    fm.close()
-
-def summon_locknet() -> None:
-    """生成网络锁定脚本"""
-    global cmdpath
-    mp = cmdpath + "\\net.bat"
-    fm = open(mp, "w")
-    cmdtext = f"""@ECHO OFF\n
-    title OsEasyToolBoxUnlockNetHeler\n
-    {HighVer_AddStartMMPC_CommandLine()}
-    :a\n
-    start {ToolBoxCfg.oseasypath}\\{ToolBoxCfg.studentExeName}\n
-    start {ToolBoxCfg.oseasypath}\\\DeviceControl_x64.exe\n
     goto a
     """
     fm.write(cmdtext)
@@ -730,7 +782,7 @@ def summon_killer() -> None:
     cmdtext = f"""@ECHO OFF\n
     title OsEasyToolBoxKiller\n
     
-    {HighVer_AddCloseMMPC_CommandLine()}
+    {HighVer_AddMMPC_Control_CommandLine(isStop=True)}
     
     taskkill /f /t /im MultiClient.exe\n
     taskkill /f /t /im MultiClient.exe\n
@@ -755,7 +807,7 @@ def backupOeKeyDll() -> None:
         "MultiClient.exe",
         "LoadDriver.exe",
         "BlackSlient.exe",
-        "\\x86\\LISSNetInfoSniffer.exe"
+        "\\x86\\LISSNetInfoSniffer.exe",
     ]
     for filename in namelist:
 
@@ -796,7 +848,7 @@ def restoneKeyDll() -> None:
         "MultiClient.exe",
         "LoadDriver.exe",
         "BlackSlient.exe",
-        "\\x86\\LISSNetInfoSniffer.exe"
+        "\\x86\\LISSNetInfoSniffer.exe",
     ]
     for filename in namelist:
         oepath = ToolBoxCfg.oseasypath + filename
@@ -948,16 +1000,6 @@ def unlockedNet() -> None:
     )
     time.sleep(1)
 
-def lockedNet() -> None:
-    summon_locknet()
-    runbat("net.bat")
-    time.sleep(2)
-    runcmd("sc start OeNetlimit")
-    time.sleep(1)
-    usecmd_runcmd(
-        'taskkill /f /t /fi "imagename eq cmd.exe" /fi "windowtitle eq 管理员:  OsEasyToolBoxlockNetHeler"'
-    )
-    time.sleep(1)
 
 def startOsEasySelfToolBox(*e) -> None:
     # print("执行功能8 请稍等...")

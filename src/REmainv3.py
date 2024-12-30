@@ -26,7 +26,7 @@ class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.7 RC2"
+        self.ver = "OsEasy-ToolBox v1.7 Beta4"
 
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -423,12 +423,12 @@ class Ui:
                     on_long_press=restoneMutClient,
                 ),
                 ft.FilledTonalButton(
-                    text="解除软件网络限制",
+                    text="停止网络管控服务(不可逆)",
                     icon=ft.icons.WIFI_PASSWORD_SHARP,
                     on_click=self.forunlocknettips,
                 ),
                 ft.FilledTonalButton(
-                    text="[BETA] 关闭USB管控服务",
+                    text="[无法正常工作] 关闭USB管控服务",
                     icon=ft.icons.USB_SHARP,
                     on_click=self.usb_unlock_tips,
                 ),
@@ -436,10 +436,10 @@ class Ui:
             ]
         )
 
-        self.teachIp_input = ft.TextField(label="输入教师端IP地址")
+        self.teachIp_input = ft.TextField(label="输入教师机IP地址")
         # 自动生成命令
         self.auto_gennerate_cmd = ft.FilledTonalButton(
-            text="自动生成远程命令",
+            text="由教师机IP生成远程命令",
             icon=ft.icons.CODE,
             on_click=lambda _: generate_yc_cmd_and_save(self.teachIp_input.value),
         )
@@ -455,6 +455,12 @@ class Ui:
             "手动更新完整远程广播命令",
             on_click=lambda _: handin_save_yc_cmd(self.conl_save_ycCmd_input.value,False),
             icon=ft.icons.UPDATE,
+        )
+
+        self.conl_from_log_get_cmd = ft.FilledTonalButton(
+            text="从日志文件获取远程命令",
+            icon=ft.icons.BOOK,
+            on_click=lambda _: from_scr_log_cmd_get_yccmd(),
         )
 
         self.conl_getyccmd_btn = ft.FilledTonalButton(
@@ -564,7 +570,7 @@ class Ui:
                 ft.NavigationRailDestination(
                     icon=ft.icons.SETTINGS_OUTLINED,
                     selected_icon_content=ft.Icon(ft.icons.SETTINGS),
-                    label="调试工具",
+                    label="DLL工具",
                 ),
             ],
             on_change=lambda e: self.selPages_Helper(e.control.selected_index),
@@ -657,7 +663,7 @@ class Ui:
     def SWC_MainPages_0(self):
         """切换至页面0_进程管理页面"""
 
-        self.mmpc_Stext.value = "未知 (点我更新状态)"
+        self.mmpc_Stext.value = "未知 (随时都可以点我更新状态)"
 
         if self.loaded_bg == True:
             # print("\n[DEBUG] Loaded with BG\n")
@@ -895,7 +901,9 @@ class Ui:
                 self.conl_ycCmd_update_with_replace_ip,
                 self.teachIp_input,
                 self.auto_gennerate_cmd,
+                self.conl_from_log_get_cmd,
                 self.conl_getyccmd_btn,
+                
             ]
         )
 
@@ -935,15 +943,15 @@ class Ui:
 
     def SWC_MainPages_5(self):
         """切换至页面5"""
-        self.dllname_input = ft.TextField(label="完整文件名")
+        self.dllname_input = ft.TextField(label="学生端目录下的完整路径+文件名")
         # Dll 名称 如: xxx.dll
-        self.dll_func_input = ft.TextField(label="调用的函数名")
+        self.dll_func_input = ft.TextField(label="调用的导出函数名")
         # Dll 内的导出函数 如: GetUserNameA
-        self.dll_return_input = ft.TextField(label="返回值的类型")
+        self.dll_return_input = ft.TextField(label="返回值的类型(int, bool, char)")
         # 返回值的类型 bool , int , char , long , double
 
         self.dll_confirm_btn = ft.FilledTonalButton(
-            text="执行",
+            text="执行函数",
             on_click=lambda _: dev_test_use_dll(
                 self.dllname_input.value,
                 self.dll_func_input.value,
@@ -973,9 +981,9 @@ class Ui:
         # )
         
         self.dll_test_case_3 = ft.FilledTonalButton(
-            text="自动填入:关闭网络",
+            text="自动填入:开启网络管控",
             on_click=lambda _: self.dll_test_case_fill_helper(
-                "OeNetlimit.dll",
+                "\\x64\\OeNetlimit.dll",
                 "DisableInternet",
                 "int",
             ),
@@ -983,9 +991,9 @@ class Ui:
         )
 
         self.dll_test_case_4 = ft.FilledTonalButton(
-            text="自动填入:启用网络",
+            text="自动填入:关闭网络管控",
             on_click=lambda _: self.dll_test_case_fill_helper(
-                "OeNetlimit.dll",
+                "\\x64\\OeNetlimit.dll",
                 "EnableNet",
                 "int",
             ),
@@ -1220,6 +1228,7 @@ class Ui:
     def only_update_MMPC_status(self, *e):
         """仅更新MMPC根服务状态"""
         st = check_MMPC_status()
+        self.show_snakemessage(f"根服务状态: {st}")
         if st == True:
             self.mmpc_Stext.value = "正在运行"
             self.page.update()
