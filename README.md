@@ -1,4 +1,5 @@
-![OsEasy-ToolBox](https://socialify.git.ci/ZiHaoSaMa66/OsEasy-ToolBox/image?description=1&descriptionEditable=A%20Simple%20Python%20ToolBox%20for%20OsEasyTeachingSystem&font=Source%20Code%20Pro&issues=1&language=1&logo=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F134737096&name=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1&theme=Dark)
+
+![ToolBox_logo](https://github.com/user-attachments/assets/98db71e1-14e3-420c-9617-896179bed8d7)
 
 ---
 
