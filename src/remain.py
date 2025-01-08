@@ -72,6 +72,10 @@ class EasyDll:
 
 def dev_test_use_dll(dll_name, func_name, return_type):
 
+
+    print("debug >",dll_name,func_name,return_type)
+    print('type >',type(dll_name),type(func_name),type(return_type))
+
     # dll_path = "" + dll_name
     dll_path = ToolBoxCfg.oseasypath + dll_name
 

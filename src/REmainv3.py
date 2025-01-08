@@ -447,13 +447,17 @@ class Ui:
         self.conl_save_ycCmd_input = ft.TextField(label="键入完整的远程广播命令")
         self.conl_ycCmd_update_with_replace_ip = ft.FilledTonalButton(
             "自动替换本地IP并更新命令",
-            on_click=lambda _: handin_save_yc_cmd(self.conl_save_ycCmd_input.value,True),
+            on_click=lambda _: handin_save_yc_cmd(
+                self.conl_save_ycCmd_input.value, True
+            ),
             icon=ft.icons.UPDATE,
         )
-        
+
         self.conl_ycCmd_update = ft.FilledTonalButton(
             "手动更新完整远程广播命令",
-            on_click=lambda _: handin_save_yc_cmd(self.conl_save_ycCmd_input.value,False),
+            on_click=lambda _: handin_save_yc_cmd(
+                self.conl_save_ycCmd_input.value, False
+            ),
             icon=ft.icons.UPDATE,
         )
 
@@ -558,6 +562,16 @@ class Ui:
                     label_content=ft.Text("广播管理"),
                 ),
                 ft.NavigationRailDestination(
+                    icon=ft.icons.VPN_KEY_OUTLINED,
+                    selected_icon_content=ft.Icon(ft.icons.VPN_KEY),
+                    label="广播命令",
+                ),
+                ft.NavigationRailDestination(
+                    icon=ft.icons.KEYBOARD_OPTION_KEY_OUTLINED,
+                    selected_icon_content=ft.Icon(ft.icons.KEYBOARD_OPTION_KEY),
+                    label="DLL工具",
+                ),
+                ft.NavigationRailDestination(
                     icon=ft.icons.STYLE_OUTLINED,
                     selected_icon_content=ft.Icon(ft.icons.STYLE),
                     label_content=ft.Text("外观"),
@@ -566,11 +580,6 @@ class Ui:
                     icon=ft.icons.FAVORITE_BORDER_OUTLINED,
                     selected_icon_content=ft.Icon(ft.icons.FAVORITE, color="red"),
                     label="关于",
-                ),
-                ft.NavigationRailDestination(
-                    icon=ft.icons.SETTINGS_OUTLINED,
-                    selected_icon_content=ft.Icon(ft.icons.SETTINGS),
-                    label="DLL工具",
                 ),
             ],
             on_change=lambda e: self.selPages_Helper(e.control.selected_index),
@@ -660,73 +669,42 @@ class Ui:
         exc = "ToolBox.SWC_MainPages_" + str(index) + "()"
         eval(exc)
 
+    def apply_bg_to_ui(self, needLoad_Stuff_list: list):
+
+        if self.loaded_bg == True:
+            bgb = ft.Stack(controls=[self.col_imgbg, needLoad_Stuff_list])
+            nedadd = ft.Row(
+                [self.MyRail, ft.VerticalDivider(width=0), bgb],
+                height=self.page.window_height,
+                width=self.page.window_width,
+            )
+            self.page.clean()
+            self.page.update()
+            self.page.add(nedadd)
+            self.page.update()
+        else:
+            nedadd = ft.Row(
+                [self.MyRail, ft.VerticalDivider(width=1), needLoad_Stuff_list],
+                height=self.page.window_height,
+                width=self.page.window_width,
+            )
+            self.page.clean()
+            self.page.update()
+            self.page.add(nedadd)
+            self.page.update()
+
     def SWC_MainPages_0(self):
         """切换至页面0_进程管理页面"""
 
         self.mmpc_Stext.value = "未知 (随时都可以点我更新状态)"
 
-        if self.loaded_bg == True:
-            # print("\n[DEBUG] Loaded with BG\n")
-            bgb = ft.Stack(controls=[self.col_imgbg, self.funcTab_Stuff])
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=0), bgb],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-        else:
-            # print("\n[DEBUG] UnLoaded with BG\n")
-            # nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),ft.Column([self.yiyanshowtext,self.funcTab_Stuff])],expand=True)
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=1), self.funcTab_Stuff],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-        pass
+        self.apply_bg_to_ui(needLoad_Stuff_list=self.funcTab_Stuff)
 
     def SWC_MainPages_1(self):
         """切换至页面1_其他管理页面"""
         # print("Func Run SWC 1")
 
-        if self.loaded_bg == True:
-            # print("\n[DEBUG] Loaded with BG\n")
-            bgb = ft.Stack(controls=[self.col_imgbg, self.func_SecondTab_Stuff])
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=0), bgb],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-        else:
-            # print("\n[DEBUG] UnLoaded with BG\n")
-            # nedadd = ft.Row([self.MyRail , ft.VerticalDivider(width=1),ft.Column([self.yiyanshowtext,self.funcTab_Stuff])],expand=True)
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=1), self.func_SecondTab_Stuff],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-        pass
+        self.apply_bg_to_ui(needLoad_Stuff_list=self.func_SecondTab_Stuff)
 
     def Get_yccmd_loj(self, *e):
         """获取远程控制命令的逻辑触发函数"""
@@ -819,83 +797,15 @@ class Ui:
             ]
         )
 
-        if self.loaded_bg == True:
-
-            bgb = ft.Stack(controls=[self.col_imgbg, self.ConlTab_Stuff])
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=1), bgb],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-            self.added_pickdialog()
-
-        else:
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=1), self.ConlTab_Stuff],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-            self.added_pickdialog()
-        pass
+        self.apply_bg_to_ui(needLoad_Stuff_list=self.ConlTab_Stuff)
 
     def SWC_MainPages_3(self):
-        """切换至页面3_外观调整界面"""
+        """切换至页面3_广播命令"""
 
-        if self.loaded_bg == True:
-
-            bgb = ft.Stack(controls=[self.col_imgbg, self.waiguanTab_Stuff])
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=1), bgb],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-            self.added_pickdialog()
-
-        else:
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=1), self.waiguanTab_Stuff],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-            self.added_pickdialog()
-
-        pass
-
-    def SWC_MainPages_4(self):
-        """切换至页面4_关于界面"""
-
-        self.AboutTab_Stuff = ft.Column(
+        self.gbCommandStuff = ft.Column(
             controls=[
-                ft.Text("此工具箱在Github上发布", size=22),
-                ft.Text("愿我们的电脑课都不再无聊~🥳", size=22),
-                ft.ElevatedButton("点我打开工具箱Github页", on_click=opengithubres),
-                ft.VerticalDivider(width=2),
+                self.yiyanshowtext,
+                ft.Divider(height=1),
                 self.conl_save_ycCmd_input,
                 self.conl_ycCmd_update,
                 self.conl_ycCmd_update_with_replace_ip,
@@ -903,7 +813,30 @@ class Ui:
                 self.auto_gennerate_cmd,
                 self.conl_from_log_get_cmd,
                 self.conl_getyccmd_btn,
-                
+            ]
+        )
+
+        self.apply_bg_to_ui(needLoad_Stuff_list=self.gbCommandStuff)
+
+        pass
+
+    def SWC_MainPages_5(self):
+        """切换至页面5_外观调整界面"""
+
+        self.apply_bg_to_ui(needLoad_Stuff_list=self.waiguanTab_Stuff)
+
+        self.added_pickdialog()
+
+        pass
+
+    def SWC_MainPages_6(self):
+        """切换至页面6_关于界面"""
+
+        self.AboutTab_Stuff = ft.Column(
+            controls=[
+                ft.Text("此工具箱在Github上发布", size=22),
+                ft.Text("愿我们的电脑课都不再无聊~🥳", size=22),
+                ft.ElevatedButton("点我打开工具箱Github页", on_click=opengithubres),
             ]
         )
 
@@ -934,15 +867,17 @@ class Ui:
             self.page.add(nedadd)
             self.page.update()
 
-    def dll_test_case_fill_helper(self, filename:str, funcname:str, returntype:str) -> None:
+    def dll_test_case_fill_helper(
+        self, filename: str, funcname: str, returntype: str
+    ) -> None:
         """自动填充测试用例的辅助函数"""
         self.dllname_input.value = filename
         self.dll_func_input.value = funcname
         self.dll_return_input.value = returntype
         self.page.update()
 
-    def SWC_MainPages_5(self):
-        """切换至页面5"""
+    def SWC_MainPages_4(self):
+        """切换至页面4 dll 调试工具"""
         self.dllname_input = ft.TextField(label="学生端目录下的完整路径+文件名")
         # Dll 名称 如: xxx.dll
         self.dll_func_input = ft.TextField(label="调用的导出函数名")
@@ -960,26 +895,24 @@ class Ui:
             icon=ft.icons.CODE,
         )
 
-        # self.dll_test_case_1 = ft.FilledTonalButton(
-        #     text="测试用例 1",
-        #     on_click=lambda _: self.dll_test_case_fill_helper(
-        #         "easyusbctrl.dll",
-        #         "EasyUsb_StopWorking",
-        #         "int",
-        #     ),
-        #     icon=ft.icons.CODE,
-        # )
-        
-        # self.dll_test_case_2 = ft.FilledTonalButton(
-        #     text="测试用例 2",
-        #     on_click=lambda _: self.dll_test_case_fill_helper(
-        #         "easyusbctrl.dll",
-        #         "EasyUsb_StartWorking",
-        #         "int",
-        #     ),
-        #     icon=ft.icons.CODE,
-        # )
-        
+        self.dll_test_case_1 = ft.FilledTonalButton(
+            text="自动填入:Usb_StopWorking",
+            on_click=lambda _: self.dll_test_case_fill_helper(
+                "\\x64\\easyusbctrl.dll",
+                "EasyUsb_StopWorking",
+                "int",
+            ),
+        )
+
+        self.dll_test_case_2 = ft.FilledTonalButton(
+            text="自动填入:Usb_StartWorking",
+            on_click=lambda _: self.dll_test_case_fill_helper(
+                "\\x64\\easyusbctrl.dll",
+                "EasyUsb_StartWorking",
+                "int",
+            ),
+        )
+
         self.dll_test_case_3 = ft.FilledTonalButton(
             text="自动填入:开启网络管控",
             on_click=lambda _: self.dll_test_case_fill_helper(
@@ -1000,38 +933,21 @@ class Ui:
             icon=ft.icons.PENDING_OUTLINED,
         )
 
-        self.debugTab_Stuff = ft.Column(
+        self.dllTab_Stuff = ft.Column(
             controls=[
                 # ft.Text("在操作前请确保你知道参数应该填什么", size=19, color="red"),
                 self.dllname_input,
                 self.dll_func_input,
                 self.dll_return_input,
-                # ft.Row(
-                #     [
-                #         self.dll_test_case_1,
-                #         self.dll_test_case_2,                        
-                #     ]
-                # ),
-                
-
+                self.dll_test_case_1,
+                self.dll_test_case_2,
                 self.dll_test_case_3,
-                self.dll_test_case_4,                        
-
-                
+                self.dll_test_case_4,
                 self.dll_confirm_btn,
             ]
         )
 
-        nedadd = ft.Row(
-            [self.MyRail, ft.VerticalDivider(width=0), self.debugTab_Stuff],
-            height=self.page.window_height,
-            width=self.page.window_width,
-        )
-
-        self.page.clean()
-        self.page.update()
-        self.page.add(nedadd)
-        self.page.update()
+        self.apply_bg_to_ui(needLoad_Stuff_list=self.dllTab_Stuff)
 
     def added_pickdialog(self):
         """添加文件选择对话框"""
