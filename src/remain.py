@@ -6,6 +6,7 @@ from datetime import datetime
 import pygetwindow as gw
 import webbrowser
 import ctypes
+from ctypes import wintypes
 import sys
 import psutil
 import pyautogui
@@ -70,37 +71,42 @@ class EasyDll:
         return msg_buffer.value
 
 
-def dev_test_use_dll(dll_name, func_name, return_type):
+def run_easy_dll(
+    dll_name, func_name, return_type, argtypes, out_buffer, after_run_func=None
+):
+    """
+    ### 参数
+    - `dll_name`: 要调用的dll文件名
+    - `func_name`: 要调用的函数名
+    - `return_type`: 要调用的函数的返回值类型
+    - `argtypes`: 要调用的函数的参数类型
+    - `out_buffer`: 要调用的函数的输出参数
+    - `after_run_func`: 运行完毕后的回调函数
 
+    """
 
-    print("debug >",dll_name,func_name,return_type)
-    print('type >',type(dll_name),type(func_name),type(return_type))
+    print("dllUse debug >", dll_name, func_name, return_type, argtypes, out_buffer)
 
     # dll_path = "" + dll_name
     dll_path = ToolBoxCfg.oseasypath + dll_name
 
     easy_dll = EasyDll(dll_path)
 
-    useType = {
-        "bool": ctypes.c_bool,
-        "int": ctypes.c_int,
-        "long": ctypes.c_long,
-        "double": ctypes.c_double,
-        "char": ctypes.c_char,
-    }
-
-    runner = easy_dll.setup_function(
-        func_name, restype=useType[return_type], argtypes=[]
-    )
+    runner = easy_dll.setup_function(func_name, restype=return_type, argtypes=argtypes)
 
     try:
-        result = runner()
+        if out_buffer == None:
+            result = runner()
+        else:
+            result = runner(out_buffer)
     except Exception as e:
         Ui_CallShowSnakeMessage(f"调用失败 抛出异常：\n{e}")
 
     print("[DEBUG] dll result:", result)
 
-    ui_show_msg = f"Result：\nName: {func_name}\n返回值: {result}"
+    ui_show_msg = f"运行结果: \n函数: {func_name}\n返回值: {result}"
+    if out_buffer != None:
+        ui_show_msg += f"\n输出参数: {out_buffer.value}"
 
     if result != 0:
         error_msg = easy_dll.get_error_message(result)
@@ -108,6 +114,9 @@ def dev_test_use_dll(dll_name, func_name, return_type):
         ui_show_msg += f"\n错误信息: {error_msg}"
 
     Ui_CallShowSnakeMessage(ui_show_msg)
+
+    if after_run_func != None:
+        after_run_func()
 
 
 class ToolBoxConfig:
@@ -196,6 +205,28 @@ class ToolBoxConfig:
         jData[style_name] = style_path
         self.write_config(jData)
 
+def get_god_potato_path():
+    # PyInstaller 提取的临时路径
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, "resources", "gp_net35.exe")
+    # 开发环境路径
+    return os.path.join("resources", "gp_net35.exe")
+
+def run_cmd_with_god_potato(arguments:str):
+    """
+    使用神の土豆来运行命令
+    参数：
+    - arguments: 要运行的命令
+    如：run_god_potato_cmd("net start MMPC")
+    """
+    ntsd_path = get_god_potato_path()
+    if not os.path.exists(ntsd_path):
+        raise FileNotFoundError(f"ntsd.exe not found at {ntsd_path}")
+
+    cmd = f'"{ntsd_path}" -cmd "cmd /c {arguments}"'
+    
+    runcmd(cmd,False)
+    
 
 ToolBoxCfg = ToolBoxConfig()
 
@@ -345,7 +376,7 @@ def HighVer_CloseMMPCProtect_Helper():
     pass
 
 
-def HighVer_AddMMPC_Control_CommandLine(IsStop=True):
+def HighVer_AddMMPC_Control_CommandLine(IsStop = True):
     """检查学生端版本 返回根服务控制指令\n
     用于直接插入到脚本中
     """
@@ -354,7 +385,7 @@ def HighVer_AddMMPC_Control_CommandLine(IsStop=True):
         _ = tryGuessStudentClientVer()
 
     if ToolBoxCfg.running_student_client_ver >= 109:
-        if IsStop:
+        if IsStop == True:
             return "sc stop MMPC\n"
         else:
             return "sc start MMPC\n"
@@ -416,6 +447,7 @@ def get_yuancheng_cmd() -> str | None:
     except FileNotFoundError:
         return None
 
+
 def parse_screenrender_log():
     """
     读取 `%appdata%/Mmc/ScreenRender.log` 文件，\n
@@ -426,31 +458,31 @@ def parse_screenrender_log():
         `list`: 包含处理后的命令部分的列表。
     """
     # 获取 %appdata% 路径
-    appdata_path = os.getenv('APPDATA')
+    appdata_path = os.getenv("APPDATA")
     if not appdata_path:
         # raise EnvironmentError("无法获取 %APPDATA% 路径")
         Ui_CallShowSnakeMessage("无法获取 %APPDATA% 路径")
         return False, []
 
-    log_path = os.path.join(appdata_path, 'Mmc', 'ScreenRender.log')
+    log_path = os.path.join(appdata_path, "Mmc", "ScreenRender.log")
     if not os.path.exists(log_path):
         # raise FileNotFoundError(f"日志文件不存在: {log_path}")
         Ui_CallShowSnakeMessage(f"日志文件不存在: {log_path}")
         return False, []
 
     # 匹配特定格式的正则表达式
-    pattern = re.compile(r'\d{2}-\d{2} \d{2}:\d{2}:\d{2} (\{.*\})')
+    pattern = re.compile(r"\d{2}-\d{2} \d{2}:\d{2}:\d{2} (\{.*\})")
 
     result = []
 
     try:
-        with open(log_path, 'r', encoding='gbk') as log_file:
+        with open(log_path, "r", encoding="gbk") as log_file:
             for line in log_file:
                 match = pattern.search(line)
                 if match:
                     command = match.group(1)
                     # 替换 " 为 #
-                    processed_command = command.replace('"', '#')
+                    processed_command = command.replace('"', "#")
                     result.append(processed_command)
     except Exception as e:
         # raise RuntimeError(f"读取日志文件时发生错误: {e}")
@@ -462,13 +494,15 @@ def parse_screenrender_log():
 
     return True, result
 
+
 # "C:\Program Files (x86)\Os-Easy\os-easy multicast teaching system\ScreenRender.exe" {#decoderName#:#h264#,#fullscreen#:0,#local#:#172.18.36.132#,#port#:7778,#remote#:#229.1.36.200#,#teacher_ip#:0,#verityPort#:7788}
 
-def save_scr_log_cmd_to_file(log_list = None) -> None:
+
+def save_scr_log_cmd_to_file(log_list=None) -> None:
     """传入`parse_screenrender_log`函数返回的命令列表\n
     或直接调用\n
     保存广播命令日志中的命令到文件"""
-    
+
     if log_list == []:
         return
     elif log_list == None:
@@ -481,15 +515,14 @@ def save_scr_log_cmd_to_file(log_list = None) -> None:
 
 def from_scr_log_cmd_get_yccmd() -> None:
     """从屏幕广播日志中提取广播命令\n并保存到文件"""
-    
+
     status, log_list = parse_screenrender_log()
     if not status:
         return
-    
+
     save_scr_log_cmd_to_file(log_list)
-    
-    handin_save_yc_cmd(log_list[0])
-    
+
+    handin_save_yc_cmd(log_list[0], replace_ip=False)
 
 
 def get_ipv4_address() -> str | None:
@@ -738,7 +771,7 @@ def summon_unlocknet() -> None:
     fm = open(mp, "w")
     cmdtext = f"""@ECHO OFF\n
     title OsEasyToolBoxUnlockNetHeler\n
-    {HighVer_AddMMPC_Control_CommandLine(isStop=True)}
+    {HighVer_AddMMPC_Control_CommandLine(True)}
     :a\n
     taskkill /f /t /im {ToolBoxCfg.studentExeName}\n
     taskkill /f /t /im DeviceControl_x64.exe\n
@@ -786,7 +819,7 @@ def summon_killer() -> None:
     cmdtext = f"""@ECHO OFF\n
     title OsEasyToolBoxKiller\n
     
-    {HighVer_AddMMPC_Control_CommandLine(isStop=True)}
+    {HighVer_AddMMPC_Control_CommandLine(True)}
     
     taskkill /f /t /im MultiClient.exe\n
     taskkill /f /t /im MultiClient.exe\n
@@ -852,14 +885,37 @@ def restoneKeyDll() -> None:
         "MultiClient.exe",
         "LoadDriver.exe",
         "BlackSlient.exe",
-        "\\x86\\LISSNetInfoSniffer.exe",
+        # "\\x86\\LISSNetInfoSniffer.exe",
     ]
+    
+    faild_file_name = []
+    
     for filename in namelist:
         oepath = ToolBoxCfg.oseasypath + filename
         needbkpath = bkppath + "\\" + filename
 
         runcmd(f'copy "{needbkpath}" "{oepath}"')
-    pass
+    
+    time.sleep(3)
+    
+    for filename in namelist:
+        
+        oepath = ToolBoxCfg.oseasypath + filename
+        
+        cSta = checkPointFileIsExcs(oepath)
+        
+        print(f"filename {filename} 复制检测状态 > {cSta}")
+        
+        if not cSta:
+            faild_file_name.append(filename)
+    
+    if len(faild_file_name) > 0:
+        msg_mix = " , ".join(faild_file_name)
+        Ui_CallShowSnakeMessage(f"在恢复文件时检测到可能复制失败的文件有: \n{msg_mix}")
+        return
+    
+    Ui_CallShowSnakeMessage("恢复文件完成")
+        
 
 
 def runbat(batname: str) -> None:

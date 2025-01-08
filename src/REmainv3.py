@@ -15,6 +15,8 @@ import flet as ft
 # 0.18.0
 
 import random
+import ctypes
+from ctypes import wintypes
 
 from pynput import keyboard
 
@@ -26,7 +28,7 @@ class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.7 Beta4"
+        self.ver = "OsEasy-ToolBox v1.7 RC2.1"
 
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -221,16 +223,13 @@ class Ui:
         self.page.theme = ft.Theme(font_family="ht")
         self.page.update()
 
-        self.page.window_height = 615
+        self.page.window_height = 635
         self.page.window_width = 450
 
         self.page.window_max_height = 2000
         self.page.window_max_width = 455
 
-        self.page.window_min_height = 500
-        self.page.window_min_width = 449
-
-        self.page.window_min_height = 500
+        self.page.window_min_height = 620
         self.page.window_min_width = 449
 
         self.page.update()
@@ -377,7 +376,9 @@ class Ui:
                     on_click=self.reflashStudentPath,
                 ),
                 ft.FilledTonalButton(
-                    text="注册粘滞键替换", icon=ft.icons.COPY_SHARP, on_click=selfunc_g1
+                    text="注册粘滞键替换",
+                    icon=ft.icons.FILE_COPY_ROUNDED,
+                    on_click=selfunc_g1,
                 ),
                 ft.Switch(
                     label="外部cmd守护进程",
@@ -410,27 +411,27 @@ class Ui:
                 ft.FilledTonalButton(
                     text="长按恢复所有备份文件",
                     icon=ft.icons.RESTORE,
-                    on_long_press=lambda e: restoneKeyDll,
+                    on_long_press=lambda _: restoneKeyDll(),
                 ),
                 ft.FilledTonalButton(
                     text="长按以恢复黑屏安静程序",
                     icon=ft.icons.ACCOUNT_BOX,
-                    on_long_press=restoneBlackSlt,
+                    on_long_press=lambda _: restoneBlackSlt(),
                 ),
                 ft.FilledTonalButton(
                     text="长按以仅恢复控屏锁定程序",
                     icon=ft.icons.SCREEN_SHARE_SHARP,
-                    on_long_press=restoneMutClient,
+                    on_long_press=lambda _: restoneMutClient(),
                 ),
                 ft.FilledTonalButton(
                     text="停止网络管控服务(不可逆)",
                     icon=ft.icons.WIFI_PASSWORD_SHARP,
-                    on_click=self.forunlocknettips,
+                    on_click=lambda _: self.forunlocknettips(),
                 ),
                 ft.FilledTonalButton(
                     text="[无法正常工作] 关闭USB管控服务",
                     icon=ft.icons.USB_SHARP,
-                    on_click=self.usb_unlock_tips,
+                    on_click=lambda _: self.usb_unlock_tips(),
                 ),
                 self.FastGetSC,
             ]
@@ -440,7 +441,7 @@ class Ui:
         # 自动生成命令
         self.auto_gennerate_cmd = ft.FilledTonalButton(
             text="由教师机IP生成远程命令",
-            icon=ft.icons.CODE,
+            icon=ft.icons.DRAW,
             on_click=lambda _: generate_yc_cmd_and_save(self.teachIp_input.value),
         )
 
@@ -450,7 +451,7 @@ class Ui:
             on_click=lambda _: handin_save_yc_cmd(
                 self.conl_save_ycCmd_input.value, True
             ),
-            icon=ft.icons.UPDATE,
+            icon=ft.icons.DRAW,
         )
 
         self.conl_ycCmd_update = ft.FilledTonalButton(
@@ -458,7 +459,7 @@ class Ui:
             on_click=lambda _: handin_save_yc_cmd(
                 self.conl_save_ycCmd_input.value, False
             ),
-            icon=ft.icons.UPDATE,
+            icon=ft.icons.MODE_EDIT_SHARP,
         )
 
         self.conl_from_log_get_cmd = ft.FilledTonalButton(
@@ -840,110 +841,82 @@ class Ui:
             ]
         )
 
-        if self.loaded_bg == True:
-
-            bgb = ft.Stack(controls=[self.col_imgbg, self.AboutTab_Stuff])
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=0), bgb],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-        else:
-
-            nedadd = ft.Row(
-                [self.MyRail, ft.VerticalDivider(width=0), self.AboutTab_Stuff],
-                height=self.page.window_height,
-                width=self.page.window_width,
-            )
-            self.page.clean()
-            self.page.update()
-            self.page.add(nedadd)
-            self.page.update()
-
-    def dll_test_case_fill_helper(
-        self, filename: str, funcname: str, returntype: str
-    ) -> None:
-        """自动填充测试用例的辅助函数"""
-        self.dllname_input.value = filename
-        self.dll_func_input.value = funcname
-        self.dll_return_input.value = returntype
-        self.page.update()
+        self.apply_bg_to_ui(needLoad_Stuff_list=self.AboutTab_Stuff)
 
     def SWC_MainPages_4(self):
         """切换至页面4 dll 调试工具"""
-        self.dllname_input = ft.TextField(label="学生端目录下的完整路径+文件名")
-        # Dll 名称 如: xxx.dll
-        self.dll_func_input = ft.TextField(label="调用的导出函数名")
-        # Dll 内的导出函数 如: GetUserNameA
-        self.dll_return_input = ft.TextField(label="返回值的类型(int, bool, char)")
-        # 返回值的类型 bool , int , char , long , double
 
-        self.dll_confirm_btn = ft.FilledTonalButton(
-            text="执行函数",
-            on_click=lambda _: dev_test_use_dll(
-                self.dllname_input.value,
-                self.dll_func_input.value,
-                self.dll_return_input.value,
+        self.dll_usb_1 = ft.FilledTonalButton(
+            text="执行:关闭USB管控",
+            on_click=lambda _: run_easy_dll(
+                "\\x64\\easyusbctrl.dll",
+                "EasyUsb_StopWorking",
+                ctypes.c_int,
+                [],
+                None,
+            ),
+            icon=ft.icons.USB,
+        )
+
+        self.dll_usb_2 = ft.FilledTonalButton(
+            text="执行:启动USB管控",
+            on_click=lambda _: run_easy_dll(
+                "\\x64\\easyusbctrl.dll",
+                "EasyUsb_StartWorking",
+                ctypes.c_int,
+                [],
+                None,
+            ),
+            icon=ft.icons.USB_OFF,
+        )
+
+        self.dll_usb_3 = ft.FilledTonalButton(
+            text="执行:查询USB管控状态",
+            on_click=lambda _: run_easy_dll(
+                "\\x64\\easyusbctrl.dll",
+                "EasyUsb_IsWorking",
+                ctypes.c_int,
+                [ctypes.POINTER(wintypes.DWORD)],
+                wintypes.DWORD(0),
             ),
             icon=ft.icons.CODE,
         )
 
-        self.dll_test_case_1 = ft.FilledTonalButton(
-            text="自动填入:Usb_StopWorking",
-            on_click=lambda _: self.dll_test_case_fill_helper(
-                "\\x64\\easyusbctrl.dll",
-                "EasyUsb_StopWorking",
-                "int",
-            ),
-        )
-
-        self.dll_test_case_2 = ft.FilledTonalButton(
-            text="自动填入:Usb_StartWorking",
-            on_click=lambda _: self.dll_test_case_fill_helper(
-                "\\x64\\easyusbctrl.dll",
-                "EasyUsb_StartWorking",
-                "int",
-            ),
-        )
-
-        self.dll_test_case_3 = ft.FilledTonalButton(
-            text="自动填入:开启网络管控",
-            on_click=lambda _: self.dll_test_case_fill_helper(
+        self.dll_net_1 = ft.FilledTonalButton(
+            text="执行:开启网络管控",
+            on_click=lambda _: run_easy_dll(
                 "\\x64\\OeNetlimit.dll",
                 "DisableInternet",
-                "int",
+                ctypes.c_int,
+                [],
+                None,
             ),
-            icon=ft.icons.PENDING_OUTLINED,
+            icon=ft.icons.SIGNAL_WIFI_CONNECTED_NO_INTERNET_4,
         )
 
-        self.dll_test_case_4 = ft.FilledTonalButton(
-            text="自动填入:关闭网络管控",
-            on_click=lambda _: self.dll_test_case_fill_helper(
+        self.dll_net_2 = ft.FilledTonalButton(
+            text="执行:关闭网络管控",
+            on_click=lambda _: run_easy_dll(
                 "\\x64\\OeNetlimit.dll",
                 "EnableNet",
-                "int",
+                ctypes.c_int,
+                [],
+                None,
             ),
-            icon=ft.icons.PENDING_OUTLINED,
+            icon=ft.icons.SIGNAL_WIFI_4_BAR,
         )
+
+        # self.dll_test_case_5 = ft.FilledTonalButton(
 
         self.dllTab_Stuff = ft.Column(
             controls=[
-                # ft.Text("在操作前请确保你知道参数应该填什么", size=19, color="red"),
-                self.dllname_input,
-                self.dll_func_input,
-                self.dll_return_input,
-                self.dll_test_case_1,
-                self.dll_test_case_2,
-                self.dll_test_case_3,
-                self.dll_test_case_4,
-                self.dll_confirm_btn,
+                self.yiyanshowtext,
+                ft.Divider(height=1),
+                self.dll_usb_1,
+                self.dll_usb_2,
+                self.dll_usb_3,
+                self.dll_net_1,
+                self.dll_net_2,
             ]
         )
 
