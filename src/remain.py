@@ -20,7 +20,9 @@ import json
 
 bkppath = "C:\\Backups"
 
-cmdpath = "C:\\Users\\Administrator\\prod"
+curr_username = os.environ.get('USERNAME')
+
+cmdpath = f"C:\\Users\\{curr_username}\\prod"
 
 
 RunBoxKiller = False
@@ -29,9 +31,13 @@ RunProtectCMD = False
 
 MMPCServRun = True
 
-os.makedirs(cmdpath, mode=0o777, exist_ok=True)
-os.makedirs(bkppath, mode=0o777, exist_ok=True)
 
+
+try:
+    os.makedirs(cmdpath, mode=0o777, exist_ok=True)
+    os.makedirs(bkppath, mode=0o777, exist_ok=True)
+except PermissionError:
+    raise Exception("权限不足: 请右键使用管理员身份运行")
 
 class EasyDll:
     def __init__(self, dll_path):
@@ -958,6 +964,11 @@ def regkillercmd() -> None:
         f'REG ADD "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\sethc.exe" /v Debugger /t REG_SZ /d "{cmdpath}\\k.bat"'
     )
 
+def del_reg_killer() -> None:
+    """清理绑定的粘滞键重定向"""
+    runcmd(
+        'REG DELETE "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\sethc.exe" /v Debugger /f'
+    )
 
 def regkillerV2cmd() -> None:
     """生成击杀脚本V2并绑定粘滞键"""
@@ -1029,7 +1040,8 @@ def delLockExeAndLogout(need_shutdown: bool) -> None:
 
 def handToStartStudent(*e) -> None:
 
-    usecmd_runcmd(f'"{ToolBoxCfg.oseasypath}{ToolBoxCfg.studentExeName}"')
+    # usecmd_runcmd(f'')
+    os.startfile(f"{ToolBoxCfg.oseasypath}{ToolBoxCfg.studentExeName}")
 
 
 # def selfunc_g5(*e):
@@ -1066,4 +1078,5 @@ def startOsEasySelfToolBox(*e) -> None:
     regkillercmd()
     onetime_protectcheck()
     time.sleep(2)
-    runcmd(f'"{ToolBoxCfg.oseasypath}AssistHelper.exe"')
+    # runcmd(f'"')
+    os.startfile(f"{ToolBoxCfg.oseasypath}AssistHelper.exe")

@@ -1,6 +1,5 @@
 from remain import *
 
-run_upto_admin()
 
 
 fstst = ToolBoxCfg.first_launch_check()
@@ -21,14 +20,14 @@ from ctypes import wintypes
 from pynput import keyboard
 
 
-fontpath = "C:\\Windows\\Fonts\\simhei.ttf"
+fontpath = "C:\\Windows\\Fonts\\Deng.ttf"
 
 
 class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.7 RC2.1"
+        self.ver = "OsEasy-ToolBox v1.8 Beta"
 
         self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
 
@@ -380,6 +379,11 @@ class Ui:
                     icon=ft.icons.FILE_COPY_ROUNDED,
                     on_click=selfunc_g1,
                 ),
+                ft.FilledTonalButton(
+                    text="还原粘滞键",
+                    icon=ft.icons.FILE_COPY_ROUNDED,
+                    on_click=lambda _: del_reg_killer(),
+                ),
                 ft.Switch(
                     label="外部cmd守护进程",
                     active_color="green",
@@ -714,6 +718,7 @@ class Ui:
             self.show_snakemessage("未拦截到控制命令参数")
         else:
             bcmd = build_run_srcmd(YC_command=get)
+            bcmd = bcmd.replace("#fullscreen#:1","#fullscreen#:0")
             runcmd(bcmd)
             # fix 黑框
         pass
