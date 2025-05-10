@@ -1,7 +1,5 @@
 from remain import *
 
-
-
 fstst = ToolBoxCfg.first_launch_check()
 if fstst == True:
     usecmd_runcmd(
@@ -19,67 +17,130 @@ from ctypes import wintypes
 
 from pynput import keyboard
 
+from collections import defaultdict
 
 fontpath = "C:\\Windows\\Fonts\\Deng.ttf"
 
 
+
+class HotkeyManager:
+    """快捷键管理中心"""
+    def __init__(self):
+        self.hotkeys = defaultdict(list)  
+        # 存储快捷键与回调的映射
+        self.current_keys = set()          
+        # 当前按下的键集合
+        self.listener = None
+        
+    def register_hotkey(self, keys, callback):
+        """注册快捷键
+        :param keys: 键序列（支持普通键和特殊键混合）
+        :param callback: 触发回调函数
+        """
+        print(f"register {keys =}")
+        normalized = frozenset(self._normalize_key(k) for k in keys)
+        self.hotkeys[normalized].append(callback)
+        
+        self.start()
+        
+    def unregister_hotkey(self, keys, callback):
+        """取消注册指定快捷键的回调函数
+        :param keys: 要取消的键序列
+        :param callback: 要移除的回调函数
+        """
+        print(f"unregister_hotkey {keys =}")
+        normalized = frozenset(self._normalize_key(k) for k in keys)
+        if normalized in self.hotkeys:
+            callbacks = self.hotkeys[normalized]
+            # 移除所有匹配的callback实例
+            while callback in callbacks:
+                callbacks.remove(callback)
+            # 如果回调列表为空，删除该快捷键条目
+            if not callbacks:
+                del self.hotkeys[normalized]
+
+    def switch_reg_helper(self,swc_value:bool,keys:list,callback):
+        """帮助开关注册快捷键
+        可以省去一堆函数
+        """
+        print(f"传入的开关值{swc_value =}")
+        
+        if swc_value == True:
+            self.register_hotkey(keys=keys, callback=callback)
+        else:
+            self.unregister_hotkey(keys=keys, callback=callback)
+        
+
+    def _normalize_key(self, key):
+        """统一键的表示形式"""
+        if isinstance(key, str):
+            return keyboard.KeyCode.from_char(key.lower())
+        elif isinstance(key, keyboard.KeyCode):
+            if str(key) == '<70>':
+                return 'f'
+        return key
+
+    def _on_press(self, key):
+        """处理按键事件"""
+        
+        self.current_keys.add(self._normalize_key(key))
+        self._check_hotkeys()
+
+    def _on_release(self, key):
+        """处理释放事件"""
+        normalized = self._normalize_key(key)
+        if normalized in self.current_keys:
+            self.current_keys.remove(normalized)
+
+    def _check_hotkeys(self):
+        """检查当前按键组合"""
+        current = frozenset(self.current_keys)
+        
+        # 查找匹配的快捷键（支持最长匹配原则）
+        for key_combo in sorted(self.hotkeys.keys(), key=len, reverse=True):
+            if key_combo.issubset(current):
+                for callback in self.hotkeys[key_combo]:
+                    callback()
+                self.current_keys.clear()  # 触发后清空状态
+                break
+            
+    def start(self):
+        """启动监听"""
+        print("start listen")
+        if not self.listener or not self.listener.running:
+            self.listener = keyboard.Listener(
+                on_press=self._on_press,
+                on_release=self._on_release
+            )
+            self.listener.run()
+
+    def stop(self):
+        """停止监听"""
+        if self.listener and self.listener.running:
+            self.listener.stop()
+    
 class Ui:
 
     def __init__(self) -> None:
 
-        self.ver = "OsEasy-ToolBox v1.8 Beta"
+        self.ver = "OsEasy-ToolBox v1.8 Beta2"
 
-        self.runwindows_lis = keyboard.Listener(on_press=self.run_windowskjj_onpress)
-
-        # 构造监听器对象listener
-        self.JieTu_listener = keyboard.Listener(on_press=self.JT_on_press)
-
-        self.RunFullSC_listener = keyboard.Listener(on_press=self.FullSC_on_press)
-
-        self.KillSCR_listener = keyboard.Listener(on_press=self.SCR_on_press)
-
-        self.runwindows_press_alt = False
-        self.runwindows_press_u = False
-
-        self.SCR_Press_K = False
-        self.SCR_Press_Alt = False
-
-        self.Press_X = False
-        self.Press_Alt = False
+        self.hotkeyManager = HotkeyManager()
 
         self.guaqi_runstatus = False  # 挂起进程状态
         self.bgtmd = 0.6  # 初始化 背景图片透明度值
         self.defult_yy = True  # 默认一言库
         self.font_loadtime = 1
 
-        self.NowSelIndex = "0"  # 防止无变量的初始化
-
+        self.NowSelIndex = "0"
         self.yiyanshowtext = ft.Text("", size=16)
         self.yiyanshowtext2 = ft.Text("", size=16)
 
         self.loaded_bg = False
 
-        pass
 
-    def FullSC_on_press(self, key):
-        """用于快捷键运行全屏控制窗口"""
 
-        if str(key) == "<70>":
-            if self.KillSCR_swc.value == False:
-                self.show_snakemessage(
-                    "警告！ 未开启快捷键杀广播进程\n尝试运行的操作已拦截...."
-                )
-            else:
-                status = get_yuancheng_cmd()
-                if status == None:
-                    self.show_snakemessage("未拦截到控制命令参数")
-                else:
-                    cmd = status.replace("#fullscreen#:0", "#fullscreen#:1")
-                    builded = build_run_srcmd(cmd)
-                    runcmd(builded)
-                    # Fix 黑框
-
-    def dic_RunFullSC(self, *e):
+    def dic_RunFullSC(self):
         """按钮点击直接运行全屏广播指令"""
         status = get_yuancheng_cmd()
 
@@ -98,64 +159,12 @@ class Ui:
                 "警告！ 未开启快捷键杀广播进程\n尝试运行的操作已拦截...."
             )
 
-    def SCR_on_press(self, key):
-        """用于检测快捷键杀SCR_Y进程"""
-
-        if key == keyboard.KeyCode(char="K") or key == keyboard.KeyCode(char="k"):
-            self.SCR_Press_K = True
-        if (
-            key == keyboard.Key.alt
-            or key == keyboard.Key.alt_l
-            or key == keyboard.Key.alt_r
-        ):
-            self.SCR_Press_Alt = True
-
-        if self.SCR_Press_Alt and self.SCR_Press_K:
-            self.SCR_Press_Alt = self.SCR_Press_K = False  # 重置按键按下状态
-            # get_scshot()
-            runcmd("taskkill /f /t /im ScreenRender_Y.exe")
-            runcmd("taskkill /f /t /im ScreenRender.exe")
 
     def dic_KillSCR(self, *e):
         """点击按钮直接杀屏幕广播进程"""
         runcmd("taskkill /f /t /im ScreenRender_Y.exe")
         runcmd("taskkill /f /t /im ScreenRender.exe")
 
-    def JT_on_press(self, key):
-        """当监听器检测到键盘按下"""
-
-        if key == keyboard.KeyCode(char="x") or key == keyboard.KeyCode(char="X"):
-            self.Press_X = True
-        if (
-            key == keyboard.Key.alt
-            or key == keyboard.Key.alt_l
-            or key == keyboard.Key.alt_r
-        ):
-            self.Press_Alt = True
-
-        if self.Press_Alt and self.Press_X:
-            self.Press_Alt = self.Press_X = False  # 重置按键按下状态
-            get_scshot()
-
-        pass
-
-    def run_windowskjj_onpress(self, key):
-        """快捷键触发运行窗口广播"""
-        if key == keyboard.KeyCode(char="U") or key == keyboard.KeyCode(char="u"):
-            self.runwindows_press_u = True
-        if (
-            key == keyboard.Key.alt
-            or key == keyboard.Key.alt_l
-            or key == keyboard.Key.alt_r
-        ):
-            self.runwindows_press_alt = True
-
-        if self.runwindows_press_alt and self.runwindows_press_u:
-            self.runwindows_press_u = self.runwindows_press_alt = False
-
-            self.Get_yccmd_loj("e")
-
-        pass
 
     def theme_changed(self, *e):
 
@@ -232,6 +241,8 @@ class Ui:
         self.page.window_min_width = 449
 
         self.page.update()
+
+
 
         self.unlock_func_askdlg = ft.AlertDialog(
             modal=True,
@@ -339,7 +350,9 @@ class Ui:
         self.mmpc_sw = ft.FilledTonalButton(
             text="长按开&关学生端根服务",
             icon=ft.icons.BACK_HAND_OUTLINED,
-            on_long_press=self.MMPC_shutdown_start_chufa,
+            # on_long_press=self.MMPC_shutdown_start_chufa,
+            on_long_press= lambda _:
+                runcmd("sc stop MMPC") if check_MMPC_status() else runcmd("sc start MMPC"),
             on_hover=self.only_update_MMPC_status,
         )
         self.mmpc_Stext = ft.TextField(
@@ -352,11 +365,15 @@ class Ui:
         # self.stud_pid = ft.TextField(label="学生端PID", disabled=True, value="未知")
 
         self.FastGetSC = ft.Switch(
-            label="Alt+X 快捷键屏幕截图", on_change=self.HotKey_screenshot
+            label="Alt+X 快捷键屏幕截图", 
+            on_change=lambda _: self.hotkeyManager.switch_reg_helper(
+                self.FastGetSC.value,
+                [keyboard.Key.alt_l,'x'],
+                get_scshot
+            )
+            
         )
 
-        # self.yiyanshowtext2,ft.Divider(),
-        # self.yiyanshowtext2 = self.yiyanshowtext
 
         self.funcTab_Stuff = ft.Column(
             controls=[
@@ -377,7 +394,7 @@ class Ui:
                 ft.FilledTonalButton(
                     text="注册粘滞键替换",
                     icon=ft.icons.FILE_COPY_ROUNDED,
-                    on_click=selfunc_g1,
+                    on_click=lambda _:regkillercmd(),
                 ),
                 ft.FilledTonalButton(
                     text="还原粘滞键",
@@ -387,7 +404,7 @@ class Ui:
                 ft.Switch(
                     label="外部cmd守护进程",
                     active_color="green",
-                    on_change=killerCmdProtect,
+                    on_change=lambda _:killerCmdProtect(),
                 ),
                 self.guaqi_sw,
                 ft.FilledTonalButton(
@@ -405,7 +422,7 @@ class Ui:
                 ft.FilledTonalButton(
                     text="长按以删除脚本文件",
                     icon=ft.icons.CLEANING_SERVICES_OUTLINED,
-                    on_long_press=delSummonCmdFile,
+                    on_long_press=lambda _:delcmdfiles(),
                 ),
                 ft.FilledTonalButton(
                     text="删除键盘锁驱动&控屏锁定程序",
@@ -420,22 +437,22 @@ class Ui:
                 ft.FilledTonalButton(
                     text="长按以恢复黑屏安静程序",
                     icon=ft.icons.ACCOUNT_BOX,
-                    on_long_press=lambda _: restoneBlackSlt(),
+                    on_long_press=lambda _: restoneFile("BlackSlient.exe"),
                 ),
                 ft.FilledTonalButton(
                     text="长按以仅恢复控屏锁定程序",
                     icon=ft.icons.SCREEN_SHARE_SHARP,
-                    on_long_press=lambda _: restoneMutClient(),
+                    on_long_press=lambda _: restoneFile("MultiClient.exe"),
                 ),
                 ft.FilledTonalButton(
                     text="停止网络管控服务(不可逆)",
                     icon=ft.icons.WIFI_PASSWORD_SHARP,
-                    on_click=lambda _: self.forunlocknettips(),
+                    on_click=lambda _: unlockedNet(),
                 ),
                 ft.FilledTonalButton(
                     text="[无法正常工作] 关闭USB管控服务",
                     icon=ft.icons.USB_SHARP,
-                    on_click=lambda _: self.usb_unlock_tips(),
+                    on_click=lambda _: usb_unlock(),
                 ),
                 self.FastGetSC,
             ]
@@ -484,7 +501,7 @@ class Ui:
 
         self.RunFullSC_btn = ft.FilledTonalButton(
             "长按运行全屏广播命令",
-            on_long_press=self.dic_RunFullSC,
+            on_long_press=lambda _:self.dic_RunFullSC(),
             icon=ft.icons.FULLSCREEN,
         )
 
@@ -501,7 +518,14 @@ class Ui:
 
         self.RunFullSC_swc = ft.Switch(
             label="Ctrl+Alt+F 以全屏运行广播命令",
-            on_change=self.HotKey_RunFullSCR,
+            on_change=lambda _: self.hotkeyManager.switch_reg_helper(
+                self.RunFullSC_swc.value,
+                [keyboard.Key.ctrl_l, keyboard.Key.alt_l,keyboard.KeyCode.from_vk(70)],
+                # [keyboard.Key.ctrl_l, keyboard.Key.alt_l,'f'],
+                # ["<70>"],
+                # {keyboard.Key.ctrl_l, keyboard.Key.alt_l, keyboard.KeyCode(vk=70)},
+                ToolBox.dic_RunFullSC
+            ),
             active_color="pink",
         )
 
@@ -513,20 +537,41 @@ class Ui:
 
         self.KillSCR_swc = ft.Switch(
             label="Alt+K 杀屏幕广播进程",
-            on_change=self.HotKey_KillSCR,
+            # on_change=self.HotKey_KillSCR,
+            on_change=lambda _: self.hotkeyManager.switch_reg_helper(
+                self.KillSCR_swc.value,
+                [keyboard.Key.alt_l,'k'],
+                ToolBox.dic_KillSCR
+                ),
             active_color="pink",
         )
 
         self.runwindows_swc = ft.Switch(
             label="Alt+U 运行窗口屏幕广播",
-            on_change=self.hotkey_runwindows,
+            # on_change=self.hotkey_runwindows,
+            on_change=lambda _: self.hotkeyManager.switch_reg_helper(
+                self.runwindows_swc.value,
+                [keyboard.Key.alt_l,'u'],
+                ToolBox.run_win_gbcmd_loj,
+                ),
+            
             active_color="pink",
         )
 
         self.try_read_sharecmd = ft.FilledTonalButton(
             text="运行窗口化广播命令",
-            on_click=self.Get_yccmd_loj,
+            on_click=self.run_win_gbcmd_loj,
             icon=ft.icons.WINDOW_SHARP,
+        )
+
+        self.hide_tbox_swc = ft.Switch(
+            label="capsLock + enter 隐&显工具箱",
+            on_change=lambda _: self.hotkeyManager.switch_reg_helper(
+                self.hide_tbox_swc.value,
+                [keyboard.Key.caps_lock,keyboard.Key.enter],
+                ToolBox.hide_toolbox_helper
+            ),
+            value=True,
         )
 
         self.waiguanTab_Stuff = ft.Column(
@@ -603,6 +648,12 @@ class Ui:
         self.reflashStudentPath()
 
         pass_ui_class(self)
+        
+        self.hotkeyManager.switch_reg_helper(
+            self.hide_tbox_swc.value,
+            [keyboard.Key.caps_lock,keyboard.Key.enter],
+            ToolBox.hide_toolbox_helper
+        )
 
     def reflashStudentPath(self, *e):
         global oseasypath
@@ -615,33 +666,13 @@ class Ui:
         # 没啥用只是顺带需要更新一下学生端版本
 
         if ToolBoxCfg.oseasypath_have_been_modified != False:
+            guess_msg = f"猜测的学生端版本 v{_ / 10}" if _ !=0 else '检测学生端版本特征失败'
+            
             self.show_snakemessage(
-                f"更新学生端路径成功\n{ToolBoxCfg.oseasypath}\n学生端进程名:{ToolBoxCfg.studentExeName}"
+                f"更新学生端路径成功\n{ToolBoxCfg.oseasypath}\n学生端进程名:{ToolBoxCfg.studentExeName}\n{guess_msg}"
             )
         else:
             self.show_snakemessage(f"更新路径失败\n也许是学生端未运行??")
-        pass
-
-    def HotKey_screenshot(self, *e):
-        """快捷键截图开关触发函数"""
-
-        if self.FastGetSC.value == True:
-
-            self.JieTu_listener.run()
-
-        elif self.FastGetSC.value == False:
-
-            self.JieTu_listener.stop()
-        pass
-
-    def HotKey_RunFullSCR(self, *e):
-
-        if self.RunFullSC_swc.value == True:
-
-            self.RunFullSC_listener.run()
-        elif self.RunFullSC_swc.value == False:
-
-            self.RunFullSC_listener.stop()
         pass
 
     def HotKey_KillSCR(self, *e):
@@ -657,14 +688,6 @@ class Ui:
             self.KillSCR_listener.stop()
         pass
 
-    def hotkey_runwindows(self, *e):
-        if self.runwindows_swc.value == True:
-
-            self.runwindows_lis.run()
-
-        elif self.runwindows_swc.value == False:
-            self.runwindows_lis.stop()
-        pass
 
     def selPages_Helper(self, index):
         """帮助切换页面选择器"""
@@ -711,8 +734,8 @@ class Ui:
 
         self.apply_bg_to_ui(needLoad_Stuff_list=self.func_SecondTab_Stuff)
 
-    def Get_yccmd_loj(self, *e):
-        """获取远程控制命令的逻辑触发函数"""
+    def run_win_gbcmd_loj(self, *e):
+        """运行屏幕广播命令的逻辑触发函数"""
         get = get_yuancheng_cmd()
         if get == None:
             self.show_snakemessage("未拦截到控制命令参数")
@@ -725,33 +748,32 @@ class Ui:
 
     def replace_SCR_loj(self, *e):
         """替换SCR程序为拦截程序的逻辑触发函数"""
-        ser_status = check_MMPC_status()
-        if ser_status == False:
-            self.show_snakemessage("开始替换程序 请稍等...\n这大约需要6秒左右")
-            status = replace_ScreenRender()
-            if status == False:
-                self.show_snakemessage(
-                    "替换拦截程序失败 未检测到可替换程序\n请确保ScreenRender_Helper.exe\n与工具箱处在同一目录"
-                )
-            else:
-                self.show_snakemessage("理论上已经成功替换拦截程序\n可自行检查替换结果")
+
+        HighVer_CloseMMPCProtect_Helper()
+        time.sleep(1)
+        self.show_snakemessage("开始替换程序 请稍等...\n这大约需要6秒左右")
+        status = replace_ScreenRender()
+        if status == False:
+            self.show_snakemessage(
+                "替换拦截程序失败 未检测到可替换程序\n请确保ScreenRender_Helper.exe\n与工具箱处在同一目录"
+            )
         else:
-            self.show_snakemessage("替换拦截程序失败\n请先手动关闭学生端根服务！")
+            self.show_snakemessage("理论上已经成功替换拦截程序\n可自行检查替换结果")
 
     def restone_SCR_loj(self, *e):
         """恢复SCR程序的逻辑触发函数"""
-        ser_status = check_MMPC_status()
-        if ser_status == False:
-            self.show_snakemessage("开始还原替换程序 请稍等...")
-            status = restone_ScreenRender()
-            if status == False:
-                self.show_snakemessage(
-                    "尝试恢复拦截程序时失败\n未检测到被重命名的ScreenRender.exe"
-                )
-            else:
-                self.show_snakemessage("理论上已经成功恢复原有程序")
+        HighVer_CloseMMPCProtect_Helper()
+        time.sleep(1)
+        self.show_snakemessage("开始还原替换程序 请稍等...")
+        status = restone_ScreenRender()
+        if status == False:
+            self.show_snakemessage(
+                "尝试恢复拦截程序时失败\n未检测到被重命名的ScreenRender.exe"
+            )
         else:
-            self.show_snakemessage("还原拦截程序失败\n请先手动关闭学生端根服务！")
+            self.show_snakemessage("理论上已经成功恢复原有程序")
+
+        
 
     def dev_read_lj_cmd_loj(self, *e):
         """读取已拦截的命令逻辑触发函数"""
@@ -838,11 +860,14 @@ class Ui:
     def SWC_MainPages_6(self):
         """切换至页面6_关于界面"""
 
+
+
         self.AboutTab_Stuff = ft.Column(
             controls=[
                 ft.Text("此工具箱在Github上发布", size=22),
                 ft.Text("愿我们的电脑课都不再无聊~🥳", size=22),
                 ft.ElevatedButton("点我打开工具箱Github页", on_click=opengithubres),
+                self.hide_tbox_swc,
             ]
         )
 
@@ -951,14 +976,19 @@ class Ui:
 
         eval(exc)
 
+    def hide_toolbox_helper(self):
+        """隐显工具箱"""
+        self.page.window_visible = False if self.page.window_visible else True
+        self.page.update()
+
     def guaqi_chufa(self, *e):
         """用于挂起进程开关的触发函数"""
         if self.guaqi_runstatus == False:
             self.page.window_visible = False
             self.page.update()
-            status = guaqi_process(ToolBoxCfg.studentExeName)
+            status = Utils.guaqi_process(ToolBoxCfg.studentExeName)
 
-            status_ = guaqi_process("MultiClient.exe")
+            status_ = Utils.guaqi_process("MultiClient.exe")
 
             if status == True:
                 self.guaqi_runstatus = True
@@ -971,8 +1001,8 @@ class Ui:
                 self.page.update()
                 self.show_snakemessage(status)
         else:
-            status = huifu_process(ToolBoxCfg.studentExeName)
-            status_ = huifu_process("MultiClient.exe")
+            status = Utils.huifu_process(ToolBoxCfg.studentExeName)
+            status_ = Utils.huifu_process("MultiClient.exe")
             if status == True:
                 self.guaqi_runstatus = False
             else:
@@ -980,21 +1010,7 @@ class Ui:
                 self.page.update()
                 self.show_snakemessage(status)
 
-    def forunlocknettips(self, *e):
-        self.show_snakemessage("解锁网络锁定中 请稍等")
-        unlockedNet()
-        self.show_snakemessage("执行完成 理论上网络已解锁")
 
-    def usb_unlock_tips(self, *e):
-
-        if not check_MMPC_status():
-            self.show_snakemessage(
-                "尝试解锁USB... 请稍等 \n实验性功能 未进行实机测试 可能无效"
-            )
-
-            usb_unlock()
-        else:
-            self.show_snakemessage("请先关闭学生端根服务")
 
     def pickrandomyiyan(self, *e):
         """挑选一个随机一言"""
@@ -1013,8 +1029,10 @@ class Ui:
                 "《机房课时间管理》",
                 "就让你看看...这葫芦里卖的什么药！",
                 "让我来摸个鱼吧~",
+                "代码没写完,Bug先写好了",
+                "科技改变课堂"
             ]
-            deft_pickindex = random.randint(0, 4)
+            deft_pickindex = random.randint(0, len(deft_yiyanlist)-1)
             self.yiyanshowtext.value = deft_yiyanlist[deft_pickindex]
             self.yiyanshowtext2.value = deft_yiyanlist[deft_pickindex]
 
@@ -1130,15 +1148,6 @@ class Ui:
             self.mmpc_Stext.value = "未运行"
             self.page.update()
 
-    def MMPC_shutdown_start_chufa(self, *e):
-        """关闭/开启MMPC根服务的触发函数"""
-        st = check_MMPC_status()
-        if st == True:
-
-            runcmd("sc stop MMPC")
-        elif st == False:
-
-            runcmd("sc start MMPC")
 
 
 ToolBox = Ui()
